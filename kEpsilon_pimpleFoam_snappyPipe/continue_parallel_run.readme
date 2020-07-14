@@ -1,0 +1,22 @@
+so what happens if we cannot finish running a parallel run in one shot?
+
+Likely the reconstructPar script will kick in.
+
+So we will have a 
+
+log.reconstructPar
+log.pisoFoam
+
+and we'll have a few time steps missing.
+
+eg. 875 is last timestep in parallel, and 875 will be present in all processors.
+
+so likely we will need to decompose again!
+
+probably need to decompose and force it...
+
+decomposePar -force will be the way..
+
+all right then running pisoFoam will result in the error...
+attempt to continue parallel run on one processor.
+.

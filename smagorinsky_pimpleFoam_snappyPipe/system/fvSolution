@@ -1,0 +1,103 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1812                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-06;
+        relTol          1e-05;
+    }
+
+    pFinal
+    {
+        $p;
+        relTol          1e-05;
+    }
+
+    "(U|k|epsilon|omega|R|nuTilda)"
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-05;
+        relTol          0;
+    }
+
+    "(U|k|epsilon|omega|R|nuTilda)Final"
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-05;
+        relTol          0;
+    }
+
+}
+
+PISO
+{
+    nCorrectors     2;
+    nNonOrthogonalCorrectors 0;
+    pRefCell        0;
+    pRefValue       0;
+}
+
+PIMPLE
+{
+    nNonOrthogonalCorrectors 1;
+    nCorrectors          1;
+    nOuterCorrectors    1000; 
+
+    residualControl
+    {
+        U
+        {
+                tolerance  1e-3;
+                relTol      0;
+        }
+        p
+        {
+                tolerance  5e-2;
+                relTol      0;
+        }
+     }
+
+}
+
+
+relaxationFactors
+{
+    fields
+    {
+        p      0.4;
+        pFinal   1;
+    }
+    equations
+    {
+        "(U|k|epsilon|omega|R|nuTilda)"     0.4;
+        "(U|k|epsilon|omega|R|nuTilda)Final"   1;
+    }
+}
+
+
+
+
+
+
+
+// ************************************************************************* //

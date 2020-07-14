@@ -1,0 +1,22 @@
+./Allclean
+
+#!/bin/sh
+cd ${0%/*} || exit 1                        # Run from this directory
+. $WM_PROJECT_DIR/bin/tools/RunFunctions    # Tutorial run functions
+
+runApplication blockMesh
+decomposePar > log.meshDecomposePar
+restore0Dir -processor
+runParallel snappyHexMesh -overwrite
+runParallel topoSet
+runParallel createPatch -overwrite
+reconstructParMesh -constant -mergeTol 1E-06 > log.reconstructParMesh
+touch refined_snappy_pipe.foam
+
+rm -r log.pisoFoam
+
+restore0Dir
+runApplication decomposePar -force
+runParallel pisoFoam
+runApplication reconstructPar
+#reconstruction complete :) means i can view results...

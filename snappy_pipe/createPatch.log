@@ -1,0 +1,60 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1906                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : v1906 OPENFOAM=1906
+Arch   : "LSB;label=32;scalar=64"
+Exec   : createPatch -overwrite
+Date   : Jul 23 2019
+Time   : 13:55:39
+Host   : DESKTOP-9S60IA4
+PID    : 2818
+I/O    : uncollated
+Case   : /home/theodore_ong/GitHub_software/thin_pipeflow_snappyHexMesh/snappy_pipe
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create polyMesh for time = 0
+
+Reading "system/createPatchDict"
+
+Adding new patch topPatch as patch 1 from 
+{
+    type            patch;
+}
+
+Adding new patch wall as patch 2 from 
+{
+    type            wall;
+}
+
+Adding new patch bottomPatch as patch 3 from 
+{
+    type            patch;
+}
+
+
+Read 9040 faces from faceSet topPatch
+Read 50472 faces from faceSet wall
+Read 9040 faces from faceSet bottomPatch
+
+Doing topology modification to order faces.
+
+Not synchronising points.
+
+Removing patches with no faces in them.
+
+Removing zero-sized patch cylinder type wall at position 0
+Removing patches.
+Writing repatched mesh to 0
+
+End
+
