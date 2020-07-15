@@ -1,0 +1,19 @@
+./Allclean
+
+#!/bin/sh
+cd ${0%/*} || exit 1                        # Run from this directory
+. $WM_PROJECT_DIR/bin/tools/RunFunctions    # Tutorial run functions
+
+runApplication blockMesh
+
+runApplication snappyHexMesh -overwrite
+restore0Dir 
+runApplication topoSet
+runApplication createPatch -overwrite
+touch refined_snappy_pipe.foam
+
+
+runApplication decomposePar
+runParallel pimpleFoam
+runApplication reconstructPar
+#reconstruction complete :) means i can view results...
