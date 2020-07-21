@@ -32,7 +32,10 @@ boundaryField
     }
     bottomPatch
     {
-        type            zeroGradient;
+        type            turbulentMixingLengthFrequencyInlet;
+        mixingLength    7e-4;
+        value           $internalField;
+
     }
 }
 

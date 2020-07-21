@@ -23,16 +23,18 @@ boundaryField
 {
     topPatch
     {
-        type            zeroGradient;
+        type            calculated;
+        value           $internalField;
     }
     wall
     {
-        type            nutkWallFunction;
-        value           uniform 0;
+        type            calculated;
+        value           $internalField;
     }
     bottomPatch
     {
-        type            zeroGradient;
+        type            calculated;
+        value           $internalField;
     }
 }
 

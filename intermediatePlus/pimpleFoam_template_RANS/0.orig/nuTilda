@@ -22,17 +22,18 @@ boundaryField
 {
     topPatch
     {
-        type            zeroGradient;
+        type            calculated;
+        value           $internalField;
     }
-
     wall
     {
-        type            zeroGradient;
+        type            calculated;
+        value           $internalField;
     }
-
     bottomPatch
     {
-        type            zeroGradient;
+        type            calculated;
+        value           $internalField;
     }
 }
 

@@ -28,7 +28,7 @@ boundaryField
     }
     wall
     {
-        type            calculated;
+        type            nutUWallFunction;
         value           $internalField;
     }
     bottomPatch
