@@ -23,18 +23,18 @@ boundaryField
 {
     topPatch
     {
-        type            zeroGradient;
+        type            calculated;
+        value           $internalField;
     }
     wall
     {
-        type            epsilonWallFunction;
+        type            calculated;
         value           $internalField;
     }
     bottomPatch
     {
-        type            turbulentMixingLengthDissipationRateInlet;
-        mixingLength    0.07;
-	value		$internalField;    
+        type            calculated;
+        value           $internalField;
     }
 }
 

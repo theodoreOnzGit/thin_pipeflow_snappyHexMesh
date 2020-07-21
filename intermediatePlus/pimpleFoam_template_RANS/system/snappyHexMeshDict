@@ -17,7 +17,7 @@ FoamFile
 // Which of the steps to run
 castellatedMesh true;
 snap            true;
-addLayers       false;
+addLayers       true;
 
 
 // Geometry. Definition of all surfaces. All surfaces are of class
@@ -120,7 +120,7 @@ castellatedMeshControls
         cylinder
         {
             // Surface-wise min and max refinement level
-            level (3 5);
+            level (3 3);
         }
     }
 
@@ -219,9 +219,9 @@ addLayersControls
     // Per final patch (so not geometry!) the layer information
     layers
     {
-        "(lowerWall|motorBike).*"
+        ".*"
         {
-            nSurfaceLayers 1;
+            nSurfaceLayers 3;
         }
     }
 
