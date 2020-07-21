@@ -15,39 +15,27 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-
-4
+3
 (
-    cylinder
-    {
-        type            wall;
-        inGroups        1 ( wall );
-        nFaces          0;
-        startFace       497836;
-    }
-
-    auto0
+    topPatch
     {
         type            patch;
         nFaces          1544;
         startFace       497836;
     }
-
-    auto1
+    wall
     {
         type            wall;
+        inGroups        1(wall);
         nFaces          46496;
         startFace       499380;
     }
-
-    auto2
+    bottomPatch
     {
         type            patch;
         nFaces          1544;
         startFace       545876;
     }
-
 )
-
 
 // ************************************************************************* //

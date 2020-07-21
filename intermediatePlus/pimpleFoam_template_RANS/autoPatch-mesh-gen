@@ -10,4 +10,6 @@ runApplication snappyHexMesh -overwrite
 transformPoints -scale '(0.01 0.01 0.01)'
 autoPatch -overwrite 75
 
+createPatch -dict system/createPatchDict_autoPatch  -overwrite
+
 touch refined_snappy_pipe.foam
