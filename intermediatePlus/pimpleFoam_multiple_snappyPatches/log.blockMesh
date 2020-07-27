@@ -1,0 +1,74 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1912                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _f3950763fe-20191219 OPENFOAM=1912
+Arch   : "LSB;label=32;scalar=64"
+Exec   : blockMesh
+Date   : Jul 27 2020
+Time   : 12:21:33
+Host   : theoong-NH5x-7xDCx-DDx
+PID    : 93005
+I/O    : uncollated
+Case   : /mnt/200GB/Github/thin_pipeflow_snappyHexMesh/intermediatePlus/pimpleFoam_multiple_snappyPatches
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Creating block mesh from "system/blockMeshDict"
+Creating block edges
+No non-planar block faces defined
+Creating topology blocks
+Creating topology patches
+
+Creating block mesh topology
+
+Check topology
+
+	Basic statistics
+		Number of internal faces : 0
+		Number of boundary faces : 6
+		Number of defined boundary faces : 6
+		Number of undefined boundary faces : 0
+	Checking patch -> block consistency
+
+Creating block offsets
+Creating merge list...
+
+Creating polyMesh from blockMesh
+Creating patches
+Creating cells
+Creating points with scale 10
+    Block 0 cell size :
+        i : 4 .. 4
+        j : 4 .. 4
+        k : 6 .. 6
+
+
+There are no merge patch pairs
+
+Writing polyMesh with 0 cellZones
+----------------
+Mesh Information
+----------------
+  boundingBox: (-10 -10 -10) (10 10 110)
+  nPoints: 756
+  nCells: 500
+  nFaces: 1725
+  nInternalFaces: 1275
+----------------
+Patches
+----------------
+  patch 0 (start: 1275 size: 100) name: movingWall
+  patch 1 (start: 1375 size: 300) name: fixedWalls
+  patch 2 (start: 1675 size: 50) name: frontAndBack
+
+End
+
