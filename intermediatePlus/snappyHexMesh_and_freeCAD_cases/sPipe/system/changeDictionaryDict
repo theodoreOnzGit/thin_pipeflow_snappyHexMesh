@@ -1,0 +1,87 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1912                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      changeDictionaryDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+boundary
+{
+    cylinder
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          0;
+        startFace       497836;
+    }
+    inlet
+    {
+        type            patch;
+        nFaces          1544;
+        startFace       497836;
+    }
+    wall
+    {
+        type            wall;
+        nFaces          46496;
+        startFace       499380;
+    }
+    outlet
+    {
+        type            patch;
+        nFaces          1544;
+        startFace       545876;
+    }
+
+}
+
+/*
+
+T
+{
+    internalField   uniform 300;
+
+    boundaryField
+    {
+        ".*"
+        {
+            type            zeroGradient;
+            value           uniform 300;
+        }
+        "heater_to_.*"
+        {
+            type            compressible::turbulentTemperatureCoupledBaffleMixed;
+            Tnbr            T;
+            kappaMethod     solidThermo;
+            value           uniform 300;
+        }
+
+        heater_to_leftSolid
+        {
+            type            compressible::turbulentTemperatureCoupledBaffleMixed;
+            Tnbr            T;
+            kappaMethod     solidThermo;
+            thicknessLayers (1e-3);
+            kappaLayers     (5e-4);
+            value           uniform 300;
+        }
+
+        minY
+        {
+            type            fixedValue;
+            value           uniform 500;
+        }
+    }
+}
+
+*/
+// ************************************************************************* //
