@@ -10,6 +10,6 @@ restore0Dir
 ideasUnvToFoam heatExchg_BL.unv
 transformPoints -scale '(0.001 0.001 0.001)'
 changeDictionary
-polyDualMesh 75 -overwrite
+#polyDualMesh 75 -overwrite
 
 touch heatExchg.foam
