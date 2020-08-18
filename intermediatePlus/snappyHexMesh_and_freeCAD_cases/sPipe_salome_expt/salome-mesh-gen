@@ -1,0 +1,15 @@
+./Allclean
+
+#!/bin/bash
+cd ${0%/*} || exit 1                        # Run from this directory
+. $WM_PROJECT_DIR/bin/tools/RunFunctions    # Tutorial run functions
+
+ideasUnvToFoam sPipe_1.unv
+# only if you want polyhedral meshes
+#polyDualMesh 75 -overwrite
+restore0Dir
+ransformPoints -scale '(0.001 0.001 0.001)'
+changeDictionary
+
+
+touch sPipe_salome.foam
