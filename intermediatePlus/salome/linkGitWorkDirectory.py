@@ -76,6 +76,17 @@ class osShortcuts:
 pathName = './thin_pipeflow_snappyHexMesh/intermediatePlus/salome/'
 importPath(pathName)
 
+pathName2 = './thin_pipeflow_snappyHexMesh/intermediatePlus/salome/videoScripts'
+importPath(pathName2)
+
+pathName3 = './thin_pipeflow_snappyHexMesh/intermediatePlus/salome/workedExamples'
+importPath(pathName3)
+
+
 print('to import os shortcuts, type:')
 print('from linkGitWorkDirectory import osShortcuts')
 print('salomeOS = osShortcuts()')
+
+print('type:')
+print('import driverScript')
+print('to get yourself started with scripts in python in the salome environment')
