@@ -18,6 +18,7 @@ class cylinderMesh:
 
         self.importModules()
         self.setDefaults()
+        self.printIntro()
 
 #  this part imports modules for the mesh and geometry
 
@@ -69,7 +70,9 @@ class cylinderMesh:
 
     def buildCylinder1(self):
 
-        cylinder1 = self.geompy.MakeCylinderRH(self.getCylinderRadius(),self.getCylinderHeight())
+        self.cylinder1 = self.geompy.MakeCylinderRH(self.getCylinderRadius(),self.getCylinderHeight())
+
+        self.geompy.addToStudy( self.cylinder1 , 'cylinder1')
 
         print(' ')
 
@@ -112,4 +115,47 @@ class cylinderMesh:
         self.buildOrigin()
 
 
+# the following just prints help and intro
 
+    def printIntro(self):
+
+
+        print(' ')
+        print(' ')
+        print('welcome to the cylinder buildMesh class, where we just build a tetrahedral mesh of a cylinder')
+        print('for an example')
+
+        print(' ')
+        print('use printHelp() to get a sense of how to use the object')
+
+        print(' ')
+
+
+
+    def printHelp(self):
+
+        print(' ')
+        print('Welcome to the print help interface')
+
+        print('to set the cylinder radius to 250 and height to 300 use:')
+
+        print('objectName.setCylinderRadius(250) and objectName.setCylinderHeight(300)')
+
+        print(' ')
+
+        print('Then if you want to build a new cylinder use')
+        print('objectName.buildCylinder1()')
+
+        print(' ')
+
+        print('To check the values of cylinder height and radius you can try')
+
+        print('objectName.getCylinderHeight(), and objectName.getCylinderRadius()')
+
+
+    def checkShape(self,shape='default'):
+
+        if shape == 'default':
+            print(self.geompy.BasicProperties(self.cylinder1))
+        else:
+            print(self.geompy.BasicProperties(shape))
