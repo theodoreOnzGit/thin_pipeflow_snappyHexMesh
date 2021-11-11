@@ -19,6 +19,7 @@ class cylinderMesh:
         self.importModules()
         self.setDefaults()
         self.printIntro()
+        self.meshInit()
 
 #  this part imports modules for the mesh and geometry
 
@@ -38,6 +39,15 @@ class cylinderMesh:
         import math
         import SALOMEDS
 
+        ###     
+        ### SMESH component
+        ###
+        
+        import  SMESH
+        from salome.smesh import smeshBuilder
+
+        import os
+
         self.sys = sys
         self.salome = salome
 
@@ -50,6 +60,10 @@ class cylinderMesh:
         self.geomBuilder = geomBuilder
         self.math = math
         self.SALOMEDS = SALOMEDS
+
+        self.SMESH = SMESH
+        self.smeshBuilder = smeshBuilder
+        self.os = os
 
         print("module import complete")
 
@@ -107,12 +121,14 @@ class cylinderMesh:
 
 # the following section sets some defaults
 
-
     def setDefaults(self):
 
         self.setCylinderRadius()
         self.setCylinderHeight()
         self.buildOrigin()
+
+
+
 
 
 # the following just prints help and intro
@@ -159,3 +175,92 @@ class cylinderMesh:
             print(self.geompy.BasicProperties(self.cylinder1))
         else:
             print(self.geompy.BasicProperties(shape))
+
+
+# now next thing is to build meshes
+
+    def meshInit(self):
+
+        self.smesh = self.smeshBuilder.New()
+
+
+
+    def meshAddShape(self,shape='default'):
+
+        if shape == 'default':
+
+            self.mesh1 = self.smesh.Mesh(self.cylinder1)
+
+        else:
+            self.mesh1 = self.smesh.Mesh(shape)
+
+        self.smesh.SetName(self.mesh1.GetMesh(),'mesh1')
+
+
+
+    def meshAddAlgorithmNetgen1D2D3D(self):
+
+        self.NETGEN_1D_2D_3D = self.mesh1.Tetrahedron(algo=self.smeshBuilder.NETGEN_1D2D3D)
+        self.smesh.SetName(self.NETGEN_1D_2D_3D.GetAlgorithm(), 'NETGEN 1D-2D-3D')
+
+    def meshAddParameters(self):
+
+        self.NETGEN_3D_Parameters_1 = self.NETGEN_1D_2D_3D.Parameters()
+        self.NETGEN_3D_Parameters_1.SetMaxSize( 41.2311 )
+        self.NETGEN_3D_Parameters_1.SetMinSize( 17.4311 )
+        self.NETGEN_3D_Parameters_1.SetSecondOrder( 0 )
+        self.NETGEN_3D_Parameters_1.SetOptimize( 1 )
+        self.NETGEN_3D_Parameters_1.SetFineness( 4 )
+        self.NETGEN_3D_Parameters_1.SetChordalError( -1 )
+        self.NETGEN_3D_Parameters_1.SetChordalErrorEnabled( 0 )
+        self.NETGEN_3D_Parameters_1.SetUseSurfaceCurvature( 1 )
+        self.NETGEN_3D_Parameters_1.SetFuseEdges( 1 )
+        self.NETGEN_3D_Parameters_1.SetQuadAllowed( 0 )
+        self.NETGEN_3D_Parameters_1.SetCheckChartBoundary( 3 )
+        isDone = self.mesh1.Compute()
+        self.smesh.SetName(self.NETGEN_3D_Parameters_1, 'NETGEN 3D Parameters_1')
+
+
+
+    def update(self):
+
+        if self.salome.sg.hasDesktop():
+            self.salome.sg.updateObjBrowser()
+
+
+    def unvExport(self):
+
+        salomeDir = self.os.getcwd()
+
+        fileName = '/mesh1.unv'
+
+        print('attempting unv export at:')
+        print(salomeDir+fileName)
+
+        try:
+            self.mesh1.ExportUNV( salomeDir+fileName )
+            pass
+        except:
+            print('ExportUNV() failed. Invalid file name?')
+
+
+class tests:
+
+
+    def __init__(self):
+
+        from cylinderClass import cylinderMesh
+        self.cylinderObj = cylinderMesh()
+
+
+    def test1(self):
+
+        self.cylinderObj.buildOrigin()
+        self.cylinderObj.buildCylinder1()
+        self.cylinderObj.meshInit()
+        self.cylinderObj.meshAddShape()
+        self.cylinderObj.meshAddAlgorithmNetgen1D2D3D()
+        self.cylinderObj.meshAddParameters()
+
+        self.cylinderObj.unvExport()
+        self.cylinderObj.update()
