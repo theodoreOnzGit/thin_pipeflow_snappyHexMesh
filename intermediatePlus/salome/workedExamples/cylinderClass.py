@@ -244,6 +244,11 @@ class cylinderMesh:
             print('ExportUNV() failed. Invalid file name?')
 
 
+    def helloThere(self):
+
+        print('hello there')
+        print('general kenobi!')
+
 class tests:
 
 
@@ -264,3 +269,70 @@ class tests:
 
         self.cylinderObj.unvExport()
         self.cylinderObj.update()
+
+
+
+class workspace:
+
+    def __init__(self):
+
+        print('initialising workspace...')
+
+        self.initialiseDefaults()
+
+
+    def getTestsObj(self):
+
+        self.reloadClasses()
+
+        return self.testsObj
+
+
+    def getCylinderObj(self):
+
+        self.reloadClasses()
+
+        return self.cylinderObj
+
+    def initialiseDefaults(self):
+
+        import cylinderClass
+        from cylinderClass import cylinderMesh
+        cylinderObj = cylinderMesh()
+
+        from cylinderClass import tests
+        testsObj = tests()
+
+        self.cylinderClass = cylinderClass
+        self.cylinderMesh = cylinderMesh
+        self.tests = tests
+        self.cylinderObj = cylinderObj
+        self.testsObj = testsObj
+
+
+        from importlib import reload
+
+        self.reload = reload
+
+
+    def reloadClasses(self):
+
+        # this bit reloads the cylinder class
+
+        reload = self.reload
+        import cylinderClass
+        reload(cylinderClass)
+        from cylinderClass import cylinderMesh
+        cylinderObj = cylinderMesh()
+
+        self.cylinderClass = cylinderClass
+        self.cylinderMesh = cylinderMesh
+        self.cylinderObj = cylinderObj
+
+        # we also re-import loaded tests
+
+        from cylinderClass import tests
+        testsObj = tests()
+
+        self.tests = tests
+        self.testsObj = testsObj
