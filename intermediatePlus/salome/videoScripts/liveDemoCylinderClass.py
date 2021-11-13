@@ -65,6 +65,77 @@ class meshBuilder:
 
 
 
+######################################################################################################
+
+
+    def printIntro(self):
+
+        print(' =====================================================')
+        print(' ')
+        print('cylinder object mesh builder class initiated')
+        print(' ')
+        print(' =====================================================')
+        print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+
+
+
+
+class workspace:
+
+    def __init__(self):
+
+
+        print('loading workspace')
+
+        self.importModules()
+
+
+    def importModules(self):
+
+        # importing the reload function
+        from importlib import reload
+        self.reload = reload
+
+        # importing the liveDemoCylinderClass python module(?)
+        import liveDemoCylinderClass
+        self.liveDemoCylinderClass = liveDemoCylinderClass
+
+        # import the meshbuilder class
+        from liveDemoCylinderClass import meshBuilder
+        self.meshBuilder = meshBuilder
+
+
+    def reloadModules(self):
+
+        reload = self.reload
+
+        import liveDemoCylinderClass
+        reload(liveDemoCylinderClass)
+
+        self.liveDemoCylinderClass = liveDemoCylinderClass
+
+        # import the meshbuilder class
+        from liveDemoCylinderClass import meshBuilder
+        self.meshBuilder = meshBuilder
+
+
+    def getCylinderObj(self):
+
+        self.reloadModules()
+        cylinderObj = self.meshBuilder()
+
+        return cylinderObj
+
+
+
+
+
+
+
+
+
+
+
 
 
 
