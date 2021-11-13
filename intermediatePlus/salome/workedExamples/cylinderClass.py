@@ -247,7 +247,6 @@ class cylinderMesh:
     def helloThere(self):
 
         print('hello there')
-        print('general kenobi!')
 
 class tests:
 
