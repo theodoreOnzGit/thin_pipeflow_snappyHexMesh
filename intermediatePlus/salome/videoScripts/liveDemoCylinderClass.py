@@ -4,7 +4,9 @@ class meshBuilder:
 
     def __init__(self):
 
+        # let's print the intro
 
+        self.printIntro()
 
         # first we import modules
         self.importModules()
@@ -63,10 +65,61 @@ class meshBuilder:
         self.SMESH = SMESH
         self.smeshBuilder = smeshBuilder
 
+    def buildOrigin(self):
 
+        geompy = self.geomBuilder.New()
+
+        O = geompy.MakeVertex(0, 0, 0)
+        OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+        OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+        OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+        geompy.addToStudy( O, 'O' )
+        geompy.addToStudy( OX, 'OX' )
+        geompy.addToStudy( OY, 'OY' )
+        geompy.addToStudy( OZ, 'OZ' )
+
+        self.setGeompy(geompy)
+
+        return self.getGeompy()
+
+
+    def buildCylinder(self,radius=100,height=300, cylinderName='cylinder1'):
+
+        geompy = self.getGeompy()
+
+        cylinder1 = geompy.MakeCylinderRH(radius, height)
+        geompy.addToStudy( cylinder1, cylinderName )
+
+
+        self.setGeompy(geompy)
+
+        return self.getGeompy()
+
+
+
+
+#####################################################################################################
+
+### here are get and set functions
+
+    def getGeompy(self):
+
+        return self.geompy
+
+
+    def setGeompy(self,geompy='default'):
+
+        if geompy == 'default':
+            pass
+        else:
+            self.geompy = geompy
+
+
+        
 
 ######################################################################################################
 
+# this section contains code for printing
 
     def printIntro(self):
 
