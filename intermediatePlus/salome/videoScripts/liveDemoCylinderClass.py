@@ -132,6 +132,62 @@ class meshBuilder:
 
 
 
+######################################################################################################
+######################################################################################################
+######################################################################################################
+
+class test:
+
+    def __init__(self):
+
+
+        # firstly import modules in the constructor
+
+        self.importModules()
+
+
+
+
+    def importModules(self):
+
+        # importing the reload function
+        from importlib import reload
+        self.reload = reload
+
+        # importing the liveDemoCylinderClass python module(?)
+        import liveDemoCylinderClass
+        self.liveDemoCylinderClass = liveDemoCylinderClass
+
+        # import the meshbuilder class
+        from liveDemoCylinderClass import meshBuilder
+        self.meshBuilder = meshBuilder
+
+
+
+    def getCylinderObj(self):
+
+        cylinderObj = self.meshBuilder()
+        return cylinderObj
+
+
+    def testCylinderObj(self):
+
+        # this demonstrates basic functionality for the cylinder object
+
+        cylinderObj = self.getCylinderObj()
+        cylinderObj.buildOrigin()
+        cylinderObj.buildCylinder()
+
+
+
+
+
+
+
+
+######################################################################################################
+######################################################################################################
+######################################################################################################
 
 class workspace:
 
@@ -157,6 +213,10 @@ class workspace:
         from liveDemoCylinderClass import meshBuilder
         self.meshBuilder = meshBuilder
 
+        # import the test class
+
+        from liveDemoCylinderClass import test
+        self.test = test
 
     def reloadModules(self):
 
@@ -171,6 +231,10 @@ class workspace:
         from liveDemoCylinderClass import meshBuilder
         self.meshBuilder = meshBuilder
 
+        # import the test class
+
+        from liveDemoCylinderClass import test
+        self.test = test
 
     def getCylinderObj(self):
 
@@ -178,6 +242,13 @@ class workspace:
         cylinderObj = self.meshBuilder()
 
         return cylinderObj
+
+    def getTestObj(self):
+
+        self.reloadModules()
+        testObj = self.test()
+
+        return testObj
 
 
 
