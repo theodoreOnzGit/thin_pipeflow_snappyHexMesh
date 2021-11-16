@@ -254,11 +254,12 @@ class tests:
     def __init__(self):
 
         from cylinderClass import cylinderMesh
-        self.cylinderObj = cylinderMesh()
+        self.cylinderMesh = cylinderMesh
 
 
     def test1(self):
 
+        self.cylinderObj = self.getCylinderObj()
         self.cylinderObj.buildOrigin()
         self.cylinderObj.buildCylinder1()
         self.cylinderObj.meshInit()
@@ -269,6 +270,12 @@ class tests:
         self.cylinderObj.unvExport()
         self.cylinderObj.update()
 
+
+    def getCylinderObj(self):
+
+        self.cylinderObj = self.cylinderMesh()
+
+        return self.cylinderObj
 
 
 class workspace:
@@ -283,6 +290,7 @@ class workspace:
     def getTestsObj(self):
 
         self.reloadClasses()
+        self.testsObj = self.tests()
 
         return self.testsObj
 
@@ -290,6 +298,7 @@ class workspace:
     def getCylinderObj(self):
 
         self.reloadClasses()
+        self.cylinderObj = self.cylinderMesh()
 
         return self.cylinderObj
 
@@ -297,16 +306,12 @@ class workspace:
 
         import cylinderClass
         from cylinderClass import cylinderMesh
-        cylinderObj = cylinderMesh()
 
         from cylinderClass import tests
-        testsObj = tests()
 
         self.cylinderClass = cylinderClass
         self.cylinderMesh = cylinderMesh
         self.tests = tests
-        self.cylinderObj = cylinderObj
-        self.testsObj = testsObj
 
 
         from importlib import reload
@@ -322,16 +327,12 @@ class workspace:
         import cylinderClass
         reload(cylinderClass)
         from cylinderClass import cylinderMesh
-        cylinderObj = cylinderMesh()
 
         self.cylinderClass = cylinderClass
         self.cylinderMesh = cylinderMesh
-        self.cylinderObj = cylinderObj
 
         # we also re-import loaded tests
 
         from cylinderClass import tests
-        testsObj = tests()
 
         self.tests = tests
-        self.testsObj = testsObj

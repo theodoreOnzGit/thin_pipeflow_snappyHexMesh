@@ -72,6 +72,38 @@ class osShortcuts:
             print("Current working directory: {0}".format(self.os.getcwd()))
 
 
+# now this function here is to help import and reload the workspace object to make life easier 
+
+def getWorkspaceObject():
+
+    from importlib import reload
+
+    # importing and reloadgin the liveDemoCylinderClass python module
+    import liveDemoCylinderClass
+    reload(liveDemoCylinderClass)
+
+    # import the meshbuilder class
+    from liveDemoCylinderClass import workspace
+    workspaceObject = workspace()
+
+    return workspaceObject
+
+
+def getWorkedExamplesWorkspaceObject():
+
+    from importlib import reload
+
+    # importing and reloadgin the liveDemoCylinderClass python module
+    import cylinderClass
+    reload(cylinderClass)
+
+    # import the meshbuilder class
+    from cylinderClass import workspace
+    workspaceObject = workspace()
+
+    return workspaceObject
+
+
 
 pathName = './thin_pipeflow_snappyHexMesh/intermediatePlus/salome/'
 importPath(pathName)
@@ -83,10 +115,11 @@ pathName3 = './thin_pipeflow_snappyHexMesh/intermediatePlus/salome/workedExample
 importPath(pathName3)
 
 
-print('to import os shortcuts, type:')
-print('from linkGitWorkDirectory import osShortcuts')
-print('salomeOS = osShortcuts()')
+print('to load workspace type')
+print('from linkGitWorkDirectory import getWorkspaceObject')
+print('self = getWorkspaceObject()')
 
-print('type:')
-print('import driverScript')
-print('to get yourself started with scripts in python in the salome environment')
+print(' ')
+print('or if you want the worked examples one, type:')
+print('from linkGitWorkDirectory import getWorkedExamplesWorkspaceObject')
+print('self = getWorkedExamplesWorkspaceObject()')

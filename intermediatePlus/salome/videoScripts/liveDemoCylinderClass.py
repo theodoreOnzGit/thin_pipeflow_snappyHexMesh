@@ -277,7 +277,13 @@ class workspace:
 
         return testObj
 
+    def printHelp(self):
 
+        print(' ')
+        print('This is the printHelp function')
+        print('to get the test object, use getTestObj()')
+        print('to get the cylinder object, use getCylinderObj()')
+        print(' ')
 
 
 
