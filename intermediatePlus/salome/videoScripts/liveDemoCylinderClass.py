@@ -80,6 +80,8 @@ class meshBuilder:
 
         self.setGeompy(geompy)
 
+        self.updateBrowser()
+
         return self.getGeompy()
 
 
@@ -93,8 +95,32 @@ class meshBuilder:
 
         self.setGeompy(geompy)
 
-        return self.getGeompy()
+        self.updateBrowser()
 
+        self.cylinder1 = cylinder1
+
+        return self.cylinder1
+
+
+    def updateBrowser(self):
+
+        # this is a function to update the browser
+        if self.salome.sg.hasDesktop():
+            self.salome.sg.updateObjBrowser()
+
+
+    def meshShapeNETGEN1D2D3D(self,shape,meshName='mesh1'):
+
+        mesh1 = self.smesh.Mesh(shape)
+        NETGEN_1D_2D_3D = mesh1.Tetrahedron(algo=self.smeshBuilder.NETGEN_1D2D3D)
+        isDone = mesh1.Compute()
+
+        self.smesh.SetName(NETGEN_1D_2D_3D.GetAlgorithm(), 'NETGEN 1D-2D-3D')
+        self.smesh.SetName(mesh1.GetMesh(), meshName)
+
+        self.updateBrowser()
+
+        return mesh1
 
 
 
@@ -176,7 +202,8 @@ class test:
 
         cylinderObj = self.getCylinderObj()
         cylinderObj.buildOrigin()
-        cylinderObj.buildCylinder()
+        cylinder1 = cylinderObj.buildCylinder()
+        mesh1 = cylinderObj.meshShapeNETGEN1D2D3D(cylinder1)
 
 
 
