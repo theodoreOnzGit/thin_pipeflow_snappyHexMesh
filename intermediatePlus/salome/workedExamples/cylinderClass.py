@@ -119,6 +119,11 @@ class cylinderMesh:
 
         return self.cylinderHeight
 
+    def getCylinder1(self):
+
+        return self.cylinder1
+
+
 # the following section sets some defaults
 
     def setDefaults(self):
@@ -248,6 +253,76 @@ class cylinderMesh:
 
         print('hello there')
 
+    def getGroupFacesFromShape(self,shape='default'):
+
+        if shape == 'default':
+            
+            self.group = self.geompy.CreateGroup(self.getCylinder1(), self.geompy.ShapeType["FACE"])
+            self.subFaceList = self.geompy.SubShapeAllSortedCentres(self.getCylinder1(), self.geompy.ShapeType["FACE"])
+        else:
+            self.group = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+            self.subFaceList = self.geompy.SubShapeAllSortedCentres(shape, self.geompy.ShapeType["FACE"])
+
+
+        return self.subFaceList
+
+########################################################################################################
+
+# here are functions to clear the workspace
+
+    def clearOrigin(self):
+
+
+        # still buggy, just a placeholder method/function
+
+        #self.geompy.RemoveObject('OX')
+        #self.geompy.RemoveObject('OY')
+        #self.geompy.RemoveObject('OZ')
+
+
+
+        #self.update()
+        pass
+
+
+    def clearShape(self,shape):
+
+        # this function uses the geomtools class
+        # https://docs.salome-platform.org/latest/gui/GEOM/geompy_doc/group__geomtools.html
+
+        from salome.geom.geomtools import GeomStudyTools
+        geomStudyObj = GeomStudyTools()
+        GeomStudyTools.deleteShape(shape)
+
+        # still needs debug, reference here for class definitions
+
+        # https://github.com/FedoraScientific/salome-gui/blob/master/src/SalomeApp/pluginsdemo/xalome.py
+        
+
+
+    def clearAll(self):
+
+        # this section of code is meant to clear everything, but is not functioning now
+
+        # https://www.salome-platform.org/forum/forum_10/740853490
+
+        for compName in ["SMESH","GEOM"]:
+
+            comp = self.salome.myStudy.FindComponent(compName)
+
+            if comp:
+
+                iterator = self.salome.myStudy.NewChildIterator( comp )
+                while iterator.More():
+                    sobj = iterator.Value()
+                    iterator.Next()
+                    nb.RemoveObjectWithChildren( sobj )
+
+########################################################################################################
+########################################################################################################
+########################################################################################################
+########################################################################################################
+########################################################################################################
 class tests:
 
 
@@ -269,6 +344,71 @@ class tests:
 
         self.cylinderObj.unvExport()
         self.cylinderObj.update()
+
+    def test2(self):
+
+        self.cylinderObj = self.getCylinderObj()
+        self.cylinderObj.buildOrigin()
+
+        self.cylinderObj.buildCylinder1()
+        
+        faceList  = self.cylinderObj.getGroupFacesFromShape()
+
+        print(faceList)
+
+        for i in faceList:
+
+            print(i)
+
+        print("length of face list is: ",len(faceList))
+
+        faceIDList = []
+
+        for i in range(len(faceList)):
+
+            FaceID = self.cylinderObj.geompy.GetSubShapeID(self.cylinderObj.getCylinder1(), faceList[i])
+
+            print(FaceID)
+            faceIDList.append(FaceID)
+
+        print(faceIDList)
+
+        # now we can see the faceIDList, and we can get all the faceIDs, great!
+
+        # next is how can we visualise the faceIDs??
+
+        # https://docs.salome-platform.org/latest/gui/GEOM/tui_working_with_groups_page.html
+
+        # in the above doc, the group object has the faces
+
+        # and the faceID is used to get individual face objects...
+        # we don't see any way of interfacing with these objects. I suppose one 
+        # has to do the naming convention manually
+
+        # because it is hard to visualise in code space what these faces are like
+
+        # we can still get length breadth and etc
+
+        # https://www.salome-platform.org/forum/forum_14/550791677
+
+        # https://www.salome-platform.org/forum/forum_10/638257047#206420738
+
+        # one way is to get the normals of the surfaces, a python dump file already shows how to get that
+        # the other way is to get the properties of the surface
+        # yet another way of differentiating surfaces is their position relative to a point
+
+        # this is done using the minimum distance code outlined here:
+        # https://docs.salome-platform.org/7/gui/GEOM/min_distance_page.html
+
+        # other object properties can be probed here:
+        # https://docs.salome-platform.org/7/gui/GEOM/using_measurement_tools_page.html
+
+        # in each of these documentation pages, you can find what you need, eg. center of mass, inertia, etc.
+
+
+        print('test 2 complete')
+
+        return faceList
 
 
     def getCylinderObj(self):
