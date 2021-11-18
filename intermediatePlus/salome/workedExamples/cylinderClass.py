@@ -110,6 +110,46 @@ class cylinderMesh:
 
         print(r'cylinder height set at '+str(height))
 
+    def setBottomInletPoint(self,point='default'):
+
+        # this function takes in a tuple as its argument
+
+        if point == 'default':
+            point = (0,0,-150)
+
+        else:
+            pass
+
+        pointX = point[0]
+        pointY = point[1]
+        pointZ = point[2]
+
+        self.bottomInletPoint = self.geompy.MakeVertex(pointX,pointY,pointZ)
+    
+        return self.bottomInletPoint
+
+
+    def setTopOutletPoint(self,point='default'):
+
+        # this function takes in a tuple as its argument
+
+        if point == 'default':
+            point = (0,0,150)
+
+        else:
+            pass
+
+        pointX = point[0]
+        pointY = point[1]
+        pointZ = point[2]
+
+        self.topOutletPoint = self.geompy.MakeVertex(pointX,pointY,pointZ)
+
+
+
+
+
+
 
     def getCylinderRadius(self):
 
@@ -128,9 +168,11 @@ class cylinderMesh:
 
     def setDefaults(self):
 
+        self.buildOrigin()
         self.setCylinderRadius()
         self.setCylinderHeight()
-        self.buildOrigin()
+        self.setTopOutletPoint()
+        self.setBottomInletPoint()
 
 
 
@@ -167,12 +209,17 @@ class cylinderMesh:
         print('Then if you want to build a new cylinder use')
         print('objectName.buildCylinder1()')
 
+        print('if you want to build a cylinder specifying radius, and bottom and top points, use:')
+        print('buildCylinder2')
+
         print(' ')
 
         print('To check the values of cylinder height and radius you can try')
 
         print('objectName.getCylinderHeight(), and objectName.getCylinderRadius()')
 
+        print('To check values of a cylinder bottom and top point, you can try:')
+        print('objectName.getBottomInletPoint() and objectName.getTopOutletPoint')
 
     def checkShape(self,shape='default'):
 
@@ -324,6 +371,10 @@ class cylinderMesh:
 
         return vector
 
+
+    def buildCylinder2(self):
+
+        pass
 
 
 ########################################################################################################
@@ -485,6 +536,8 @@ class tests:
         for vector in normalVectorList:
 
             print(vector)
+            Descr = self.cylinderObj.geompy.WhatIs(vector)
+            print(Descr)
 
         print('face list normal test complete')
 
@@ -543,6 +596,18 @@ class tests:
 
         # this is best done using ssh
         # https://stackoverflow.com/questions/8588768/how-do-i-avoid-the-specification-of-the-username-and-password-at-every-git-push
+
+        # so firstly, i want to build a cylinder with height, radius, bottom point and top point attributes 
+
+        # the bottom point i may call the inlet point and the top point i may call the outlet point
+        # i will call it bottomInletPoint, and topOutletPoint respectively
+
+        # the vector constructed will be using the top and bottom points
+
+        # thus the cylinder will be constructed. I will then make groups 
+
+
+
 
 
 
