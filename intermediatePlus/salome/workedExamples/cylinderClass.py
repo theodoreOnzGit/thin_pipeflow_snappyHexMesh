@@ -310,6 +310,21 @@ class cylinderMesh:
 
         return minDistance
 
+    def getMinimumDistanceVector(self,obj1,obj2):
+
+
+        # the vector to be returned is a tuple
+
+
+        [aDist, DX, DY, DZ] = self.geompy.MinDistanceComponents(obj1,obj2)
+
+        # the vector will be calculated as coordiantes of obj1 minus coordinates of obj2
+
+        vector = (DX,DY,DZ)
+
+        return vector
+
+
 
 ########################################################################################################
 
@@ -487,8 +502,14 @@ class tests:
         for face in faceList:
 
             self.cylinderObj.printMinimumDistance(face,originPoint)
+        
+            # to use getMinimumDistanceVector, you must present the positional arguments
+            # initial point, and then final point
+            minDistanceVector = self.cylinderObj.getMinimumDistanceVector(originPoint,face) 
 
             totalDistance += self.cylinderObj.getMinimumDistance(face,originPoint) 
+
+            print('the minimum distance vector is:',minDistanceVector)
 
         print('total minimum distance is: ',totalDistance)
 
