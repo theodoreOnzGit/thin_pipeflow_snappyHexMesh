@@ -519,6 +519,32 @@ class tests:
         # if we know where the face should be in coordinate space, then we can use that to locate and automatically name the
         # faces in each cylinder!
 
+        # next thing is to start naming the faces by their coordinates!
+
+        # how do i do this?
+
+    
+    def faceNamingTest(self):
+
+        # this test is meant to automate the creation of a cylinder and the process of naming the faces
+        # of said cylinder
+
+        self.cylinderObj = self.getCylinderObj()
+
+        self.cylinderObj.buildCylinder1()
+
+        # now, i want to make a cylinder with a set radius, height, and two fixed points or vertices
+        # the bottom vertex will form the base of the plate
+
+
+        # last but not least (not related to this python script), it is interesting to see 
+        # some good shortcuts, eg ctrl-r
+        # and also configuring github to automatically fill in password everytime during a push
+
+        # this is best done using ssh
+        # https://stackoverflow.com/questions/8588768/how-do-i-avoid-the-specification-of-the-username-and-password-at-every-git-push
+
+
 
     def getCylinderObj(self):
 
