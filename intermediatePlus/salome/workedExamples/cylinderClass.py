@@ -253,7 +253,7 @@ class cylinderMesh:
 
         print('hello there')
 
-    def getGroupFacesFromShape(self,shape='default'):
+    def getGroupFaceListFromShape(self,shape='default'):
 
         if shape == 'default':
             
@@ -265,6 +265,51 @@ class cylinderMesh:
 
 
         return self.subFaceList
+
+    def getGroupFromShape(self,shape = 'default'):
+
+        if shape == 'default':
+            
+            self.group = self.geompy.CreateGroup(self.getCylinder1(), self.geompy.ShapeType["FACE"])
+        else:
+            self.group = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+
+
+        return self.group
+
+########################################################################################################
+
+### here are functions to probe the shape geometry
+
+# this following function returns a list of normal vectors from a list of faces
+
+    def returnFaceNormalVectors(self, faceList):
+
+        normalList = []
+
+        for face in faceList:
+
+            normalVector = self.geompy.GetNormal(face)
+
+            normalList.append(normalVector)
+
+        return normalList
+
+
+    def printMinimumDistance(self,obj1,obj2):
+
+        minDistance = self.geompy.MinDistance(obj1,obj2)
+
+        print('the minimum distance between object 1 and object 2 is:', minDistance)
+
+
+
+    def getMinimumDistance(self,obj1,obj2):
+
+        minDistance = self.geompy.MinDistance(obj1,obj2)
+
+        return minDistance
+
 
 ########################################################################################################
 
@@ -352,7 +397,7 @@ class tests:
 
         self.cylinderObj.buildCylinder1()
         
-        faceList  = self.cylinderObj.getGroupFacesFromShape()
+        faceList  = self.cylinderObj.getGroupFaceListFromShape()
 
         print(faceList)
 
@@ -409,6 +454,49 @@ class tests:
         print('test 2 complete')
 
         return faceList
+
+    def faceListTest(self):
+
+        # this first part of the test prints normals associated with the face list
+
+        self.cylinderObj = self.getCylinderObj()
+
+        self.cylinderObj.buildCylinder1()
+        
+        faceList  = self.cylinderObj.getGroupFaceListFromShape()
+
+        normalVectorList = self.cylinderObj.returnFaceNormalVectors(faceList)
+
+        for vector in normalVectorList:
+
+            print(vector)
+
+        print('face list normal test complete')
+
+        # note that vectors are objects, and cannot be printed straightaway
+
+        # so they may not be so useful at the moment
+
+        # the second part i want to try is the minimum distance from a point
+
+
+        originPoint = self.cylinderObj.geompy.MakeVertex(0,0,0)
+
+        totalDistance = 0
+
+        for face in faceList:
+
+            self.cylinderObj.printMinimumDistance(face,originPoint)
+
+            totalDistance += self.cylinderObj.getMinimumDistance(face,originPoint) 
+
+        print('total minimum distance is: ',totalDistance)
+
+        print('face minimum distance test complete')
+
+
+        # if we know where the face should be in coordinate space, then we can use that to locate and automatically name the
+        # faces in each cylinder!
 
 
     def getCylinderObj(self):
