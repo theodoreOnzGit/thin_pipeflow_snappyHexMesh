@@ -163,6 +163,14 @@ class cylinderMesh:
 
         return self.cylinder1
 
+    def getTopOutletPoint(self):
+
+        return self.topOutletPoint
+
+    def getBottomInletPoint(self):
+
+        return self.bottomInletPoint
+
 
 # the following section sets some defaults
 
