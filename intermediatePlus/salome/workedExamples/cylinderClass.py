@@ -318,13 +318,13 @@ class cylinderMesh:
         if shape == 'default':
             
             self.group = self.geompy.CreateGroup(self.getCylinder1(), self.geompy.ShapeType["FACE"])
-            self.subFaceList = self.geompy.SubShapeAllSortedCentres(self.getCylinder1(), self.geompy.ShapeType["FACE"])
+            self.faceList = self.geompy.SubShapeAllSortedCentres(self.getCylinder1(), self.geompy.ShapeType["FACE"])
         else:
             self.group = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
-            self.subFaceList = self.geompy.SubShapeAllSortedCentres(shape, self.geompy.ShapeType["FACE"])
+            self.faceList = self.geompy.SubShapeAllSortedCentres(shape, self.geompy.ShapeType["FACE"])
 
 
-        return self.subFaceList
+        return self.faceList
 
     def getGroupFromShape(self,shape = 'default'):
 
@@ -352,12 +352,49 @@ class cylinderMesh:
         for i in range(len(faceList)):
 
             FaceID = self.geompy.GetSubShapeID(shape, faceList[i])
-
-            print(FaceID)
             faceIDList.append(FaceID)
 
 
         return faceIDList
+
+#######################################################################################################
+
+# these are functions that deal specifically with one face object, identify it and add it
+
+
+    def addInletToCylinder(self,face,shape = 'cylinder2'):
+
+        if shape == 'cylinder2':
+
+            shape = self.getCylinder2()
+
+        # suppose i have the face, i can get the id straightaway
+
+        faceID = self.geompy.GetSubShapeID(shape,face)
+
+        # i can also measure distance between this face an a set point
+
+        # in this case the point is the inlet
+
+        inletPoint = self.getBottomInletPoint()
+
+        # next thing is to measure distance between the inlet point and the face
+
+        minDistance = self.getMinimumDistance(inletPoint,face)
+
+        # so by default if the minimum distance is 0 (exactly), then i know its the inlet point
+        # if i know so, then i can add the inlet straightaway 
+        
+        if minDistance == 0:
+
+            inlet = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+            self.geompy.UnionIDs(inlet, [faceID])
+            self.geompy.addToStudyInFather(shape, inlet, 'inlet' )
+            self.update()
+
+
+
+
 
 
 ########################################################################################################
@@ -406,6 +443,10 @@ class cylinderMesh:
         vector = (DX,DY,DZ)
 
         return vector
+
+#########################################################################################################
+
+# here is buildCylinder2, i might move it elsewhere for neatness sake
 
 
     def buildCylinder2(self):
@@ -676,6 +717,16 @@ class tests:
         faceIDList = self.cylinderObj.getFaceIDListFromShape(shape=cylinder2)
 
         print(faceIDList)
+
+        faceList = self.cylinderObj.getGroupFaceListFromShape(shape=cylinder2)
+
+        for face in faceList:
+
+            self.cylinderObj.addInletToCylinder(face,shape=cylinder2)
+
+        # once i get each faceID i can start extracting face objects, or not...
+        # from a face list, i can get the faceID and the face object for distance measurement!
+        # once i measure the distance and get the id of that face, i can start identifying and naming the face
 
 
     def comments(self):
