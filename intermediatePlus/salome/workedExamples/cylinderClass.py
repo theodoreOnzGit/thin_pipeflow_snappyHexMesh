@@ -163,6 +163,11 @@ class cylinderMesh:
 
         return self.cylinder1
 
+    def getCylinder2(self):
+
+        return self.cylinder2
+
+
     def getTopOutletPoint(self):
 
         return self.topOutletPoint
@@ -332,6 +337,29 @@ class cylinderMesh:
 
         return self.group
 
+    def getFaceIDListFromShape(self,shape = 'cylinder2'):
+
+        if shape == 'default':
+            shape = self.getCylinder1()
+
+        elif shape == 'cylinder2':
+            shape = self.getCylinder2()
+
+        faceList  = self.getGroupFaceListFromShape(shape = shape)
+
+        faceIDList = []
+
+        for i in range(len(faceList)):
+
+            FaceID = self.geompy.GetSubShapeID(shape, faceList[i])
+
+            print(FaceID)
+            faceIDList.append(FaceID)
+
+
+        return faceIDList
+
+
 ########################################################################################################
 
 ### here are functions to probe the shape geometry
@@ -382,7 +410,29 @@ class cylinderMesh:
 
     def buildCylinder2(self):
 
-        pass
+
+        # firstly, i'll load in all the coordinates
+
+        topOutletPoint = self.getTopOutletPoint()
+        bottomInletPoint = self.getBottomInletPoint()
+        cylinderRadius = self.getCylinderRadius()
+        
+        # secondly, i'll build the derived quantities, eg.vector1, height and etc
+
+        # the two points to specify in this vector by position is the start point, then the end poin
+                # the two points to specify in this vector by position is the start point, then the end pointt
+        vector1 =  self.geompy.MakeVector(bottomInletPoint,topOutletPoint)
+
+        height = self.getMinimumDistance(bottomInletPoint,topOutletPoint)
+
+
+        self.cylinder2 = self.geompy.MakeCylinder(bottomInletPoint, vector1, cylinderRadius, height)
+
+        self.geompy.addToStudy( self.cylinder2 , 'cylinder2')
+
+        self.update()
+
+        return self.cylinder2
 
 
 ########################################################################################################
@@ -597,15 +647,8 @@ class tests:
         # now, i want to make a cylinder with a set radius, height, and two fixed points or vertices
         # the bottom vertex will form the base of the plate
 
+        # so let's build cylinder class 2 first
 
-        # last but not least (not related to this python script), it is interesting to see 
-        # some good shortcuts, eg ctrl-r
-        # and also configuring github to automatically fill in password everytime during a push
-
-        # this is best done using ssh
-        # https://stackoverflow.com/questions/8588768/how-do-i-avoid-the-specification-of-the-username-and-password-at-every-git-push
-
-        # so firstly, i want to build a cylinder with height, radius, bottom point and top point attributes 
 
         # the bottom point i may call the inlet point and the top point i may call the outlet point
         # i will call it bottomInletPoint, and topOutletPoint respectively
@@ -614,9 +657,39 @@ class tests:
 
         # thus the cylinder will be constructed. I will then make groups 
 
+        cylinder2 = self.cylinderObj.buildCylinder2()
 
 
+        # to create faces, we need to first create a group
 
+        # for example, in the python dump file, we see:
+
+        # inlet = geompy.CreateGroup(Cylinder_1, geompy.ShapeType["FACE"])
+        # geompy.UnionIDs(inlet, [3])
+        # geompy.addToStudyInFather( Cylinder_1, inlet, 'inlet' )
+
+        # here the inlet group is created, it assigns the face number 3 to inlet using the unionID function
+        # then adds it to cylinder_1 as a add to studyInFather kind of class
+
+        # now how did we get number [3]? we needed to get a faceList first
+
+        faceIDList = self.cylinderObj.getFaceIDListFromShape(shape=cylinder2)
+
+        print(faceIDList)
+
+
+    def comments(self):
+
+        
+
+        # last but not least (not related to this python script), it is interesting to see 
+        # some good shortcuts, eg ctrl-r
+        # and also configuring github to automatically fill in password everytime during a push
+
+        # this is best done using ssh
+        # https://stackoverflow.com/questions/8588768/how-do-i-avoid-the-specification-of-the-username-and-password-at-every-git-push
+
+        pass
 
 
     def getCylinderObj(self):
