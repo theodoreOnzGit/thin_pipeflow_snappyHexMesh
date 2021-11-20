@@ -78,7 +78,7 @@ def getWorkspaceObject():
 
     from importlib import reload
 
-    # importing and reloadgin the liveDemoCylinderClass python module
+    # importing and reloading the liveDemoCylinderClass python module
     import liveDemoCylinderClass
     reload(liveDemoCylinderClass)
 
@@ -93,7 +93,7 @@ def getWorkedExamplesWorkspaceObject():
 
     from importlib import reload
 
-    # importing and reloadgin the liveDemoCylinderClass python module
+    # importing and reloading the cylinderClass python module (under worked examples)
     import cylinderClass
     reload(cylinderClass)
 
@@ -114,7 +114,7 @@ importPath(pathName2)
 pathName3 = './thin_pipeflow_snappyHexMesh/intermediatePlus/salome/workedExamples'
 importPath(pathName3)
 
-
+print(' ')
 print('to load workspace type')
 print('from linkGitWorkDirectory import getWorkspaceObject')
 print('self = getWorkspaceObject()')
