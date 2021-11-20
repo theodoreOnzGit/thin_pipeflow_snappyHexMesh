@@ -16,6 +16,16 @@ class meshBuilder:
 
         self.initialiseSalomeObjects()
 
+        # we need to initialise a geompy object
+
+        self.setGeompy('new')
+
+
+        # next we give some default dimensions
+
+        self.setDimensionDefaults()
+
+
 
     # initialise salome notebook and mesh
 
@@ -67,39 +77,69 @@ class meshBuilder:
 
     def buildOrigin(self):
 
-        geompy = self.geomBuilder.New()
-
-        O = geompy.MakeVertex(0, 0, 0)
-        OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
-        OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
-        OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
-        geompy.addToStudy( O, 'O' )
-        geompy.addToStudy( OX, 'OX' )
-        geompy.addToStudy( OY, 'OY' )
-        geompy.addToStudy( OZ, 'OZ' )
-
-        self.setGeompy(geompy)
+        O = self.geompy.MakeVertex(0, 0, 0)
+        OX = self.geompy.MakeVectorDXDYDZ(1, 0, 0)
+        OY = self.geompy.MakeVectorDXDYDZ(0, 1, 0)
+        OZ = self.geompy.MakeVectorDXDYDZ(0, 0, 1)
+        self.geompy.addToStudy( O, 'O' )
+        self.geompy.addToStudy( OX, 'OX' )
+        self.geompy.addToStudy( OY, 'OY' )
+        self.geompy.addToStudy( OZ, 'OZ' )
 
         self.updateBrowser()
 
         return self.getGeompy()
 
 
-    def buildCylinder(self,radius=100,height=300, cylinderName='cylinder1'):
-
-        geompy = self.getGeompy()
-
-        cylinder1 = geompy.MakeCylinderRH(radius, height)
-        geompy.addToStudy( cylinder1, cylinderName )
+    def buildCylinder1(self,radius='default',height='default', cylinderName='cylinder1'):
 
 
-        self.setGeompy(geompy)
+        if radius == 'default':
+
+            radius = self.getRadius()
+
+        if height == 'default':
+
+            height = self.getCylinderHeight()
+
+        cylinder1 = self.geompy.MakeCylinderRH(radius, height)
+        self.geompy.addToStudy( cylinder1, cylinderName )
 
         self.updateBrowser()
 
         self.cylinder1 = cylinder1
 
         return self.cylinder1
+
+
+    def buildCylinder2(self,radius='default', cylinderName='cylinder2'):
+
+        # first we build some dimensions for the cylinder 
+        
+        if radius == 'default':
+
+            radius = self.getRadius()
+
+        bottomInletPoint = self.getBottomInletPoint()
+        topOutletPoint = self.getTopOutletPoint()
+
+        # next, we determine the height of the cylinder        
+
+        height = self.getMinDist(startPoint = bottomInletPoint, endPoint = topOutletPoint)
+
+        # thirdly we get the vector necessary for cylinder construction
+
+        vector = self.getVector(startPoint = bottomInletPoint, endPoint = topOutletPoint)
+
+        cylinder2 = self.geompy.MakeCylinder(bottomInletPoint, vector, radius, height)
+        self.geompy.addToStudy( cylinder2, cylinderName )
+
+        self.updateBrowser()
+
+        self.cylinder2 = cylinder2
+
+        return self.cylinder2
+
 
 
     def updateBrowser(self):
@@ -137,14 +177,81 @@ class meshBuilder:
 
         if geompy == 'default':
             pass
+        elif geompy == 'new':
+            self.geompy = self.geomBuilder.New()
         else:
             self.geompy = geompy
 
 
+    def setRadius(self,radius=100):
+
+        self.radius=radius
+
+    def getRadius(self):
+
+        return self.radius
+
+    def setCylinderHeight(self,height=300):
+
+        self.cylinderHeight = height
+
+    def getCylinderHeight(self):
+
+        return self.cylinderHeight
+
+    def setBottomInletPoint(self,point=(0,0,-150)):
+
+        x = point[0]
+        y = point[1]
+        z = point[2]
+
+        self.bottomInletPoint = self.geompy.MakeVertex(x,y,z)
+
+    def getBottomInletPoint(self):
+
+        return self.bottomInletPoint
+
+
+
+    def setTopOutletPoint(self,point=(0,0,150)):
+
+        x = point[0]
+        y = point[1]
+        z = point[2]
+
+        self.topOutletPoint = self.geompy.MakeVertex(x,y,z)
+
+    def getTopOutletPoint(self):
+
+        return self.topOutletPoint
         
+
+    def setDimensionDefaults(self):
+
+        self.setTopOutletPoint()
+        self.setBottomInletPoint()
+        self.setCylinderHeight()
+        self.setRadius()
 
 ######################################################################################################
 
+# this section does intermeditate calculations
+
+    def getMinDist(self,startPoint,endPoint):
+
+        return self.geompy.MinDistance(startPoint, endPoint)
+
+    def getVector(self,startPoint,endPoint):
+
+        return self.geompy.MakeVector(startPoint,endPoint)
+
+
+
+
+
+######################################################################################################
+######################################################################################################
+######################################################################################################
 # this section contains code for printing
 
     def printIntro(self):
@@ -202,10 +309,15 @@ class test:
 
         cylinderObj = self.getCylinderObj()
         cylinderObj.buildOrigin()
-        cylinder1 = cylinderObj.buildCylinder()
+        cylinder1 = cylinderObj.buildCylinder1()
         mesh1 = cylinderObj.meshShapeNETGEN1D2D3D(cylinder1)
 
 
+    def testFaceName(self):
+
+        cylinderObj = self.getCylinderObj()
+        cylinderObj.buildOrigin()
+        cylinder2 = cylinderObj.buildCylinder2()
 
 
 
