@@ -394,6 +394,75 @@ class cylinderMesh:
 
 
 
+    def addOutletToCylinder(self,face,shape = 'cylinder2'):
+
+        if shape == 'cylinder2':
+
+            shape = self.getCylinder2()
+
+        # suppose i have the face, i can get the id straightaway
+
+        faceID = self.geompy.GetSubShapeID(shape,face)
+
+        # i can also measure distance between this face an a set point
+
+        # in this case the point is the outlet
+
+        outletPoint = self.getTopOutletPoint()
+
+        # next thing is to measure distance between the outlet point and the face
+
+        minDistance = self.getMinimumDistance(outletPoint,face)
+
+        # so by default if the minimum distance is 0 (exactly), then i know its the outlet point and outlet face
+        # if i know so, then i can add the outlet straightaway 
+        
+        if minDistance == 0:
+
+            outlet = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+            self.geompy.UnionIDs(outlet, [faceID])
+            self.geompy.addToStudyInFather(shape, outlet, 'outlet' )
+            self.update()
+
+
+    def addWallToCylinder(self,face,shape = 'cylinder2'):
+
+        if shape == 'cylinder2':
+
+            shape = self.getCylinder2()
+
+        # suppose i have the face, i can get the id straightaway
+
+        faceID = self.geompy.GetSubShapeID(shape,face)
+
+        # i can also measure distance between this face an a set point
+
+        # in this case the point is the inlet
+
+        inletPoint = self.getBottomInletPoint()
+
+        # next thing is to measure distance between the inlet point and the face
+
+        minDistance = self.getMinimumDistance(inletPoint,face)
+
+        # so by default if the minimum distance is the cylinder radius (exactly), then i know the shape is the wall
+        # if i know so, then i can add the wall straightaway 
+       
+        difference = minDistance - self.getCylinderRadius()  
+
+        # if the difference between the minimum distance and cylinder radius is zero, then
+        # i can add the wall straight away
+
+
+        if difference == 0:
+
+            wall = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+            self.geompy.UnionIDs(wall, [faceID])
+            self.geompy.addToStudyInFather(shape, wall, 'wall' )
+            self.update()
+
+
+
 
 
 
@@ -683,8 +752,6 @@ class tests:
 
         self.cylinderObj = self.getCylinderObj()
 
-        self.cylinderObj.buildCylinder1()
-
         # now, i want to make a cylinder with a set radius, height, and two fixed points or vertices
         # the bottom vertex will form the base of the plate
 
@@ -720,14 +787,17 @@ class tests:
 
         faceList = self.cylinderObj.getGroupFaceListFromShape(shape=cylinder2)
 
+        # from a face list, i can get the faceID and the face object for distance measurement!
+        # once i measure the distance and get the id of that face, i can start identifying and naming the face
+        
         for face in faceList:
 
             self.cylinderObj.addInletToCylinder(face,shape=cylinder2)
+            self.cylinderObj.addOutletToCylinder(face,shape=cylinder2)
+            self.cylinderObj.addWallToCylinder(face,shape=cylinder2)
 
-        # once i get each faceID i can start extracting face objects, or not...
-        # from a face list, i can get the faceID and the face object for distance measurement!
-        # once i measure the distance and get the id of that face, i can start identifying and naming the face
 
+        print('face adding tests complete!')
 
     def comments(self):
 
