@@ -225,6 +225,9 @@ class meshBuilder:
 
         return self.topOutletPoint
         
+    def getFaceGroup(self):
+
+        return self.faceGroup
 
     def setDimensionDefaults(self):
 
@@ -246,8 +249,35 @@ class meshBuilder:
         return self.geompy.MakeVector(startPoint,endPoint)
 
 
+    # this function returns a set of faces from the shape
 
+    def buildGroupFromShape(self,shape = 'cylinder2'):
 
+        if shape == 'cylinder1':
+            
+            self.faceGroup = self.geompy.CreateGroup(self.buildCylinder1(), self.geompy.ShapeType["FACE"])
+
+        elif shape == 'cylinder2':
+
+            self.faceGroup = self.geompy.CreateGroup(self.buildCylinder2(), self.geompy.ShapeType["FACE"])
+
+        else:
+
+            self.faceGroup = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+
+        return self.faceGroup
+
+    def buildFaceListFromShape(self,shape = 'cylinder2'):
+
+        if shape == 'cylinder1':
+            shape = self.buildCylinder1()
+
+        elif shape == 'cylinder2':
+            shape = self.buildCylinder2()
+
+        self.faceList  = self.geompy.SubShapeAllSortedCentres(shape, self.geompy.ShapeType["FACE"])
+
+        return self.faceList
 
 ######################################################################################################
 ######################################################################################################
@@ -315,11 +345,35 @@ class test:
 
     def testFaceName(self):
 
+        # we are initiating the cylinder build process
+
         cylinderObj = self.getCylinderObj()
         cylinderObj.buildOrigin()
         cylinder2 = cylinderObj.buildCylinder2()
 
+        # now we need to get the vertices for minimum distance
 
+        topOutletPoint = cylinderObj.getTopOutletPoint()
+        bottomInletPoint = cylinderObj.getBottomInletPoint()
+
+        # let's return a group of faces (important for adding objects to geopy)
+
+        faceGroup = cylinderObj.buildGroupFromShape(shape = cylinder2)
+
+        print(faceGroup)
+
+        # let's also return a list of faces so that we can compare distance
+
+        faceList = cylinderObj.buildFaceListFromShape(shape = cylinder2)
+
+        print(faceList)
+
+        for face in faceList:
+            print(face)
+
+            distance = cylinderObj.getMinDist(startPoint = bottomInletPoint, endPoint = face)
+
+            print(distance)
 
 
 
