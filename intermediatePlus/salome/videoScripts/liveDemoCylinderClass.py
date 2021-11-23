@@ -279,6 +279,95 @@ class meshBuilder:
 
         return self.faceList
 
+    def buildBottomInletFace(self,faceList,shape):
+
+        # first, we get our two points, the face and the bottom vertex
+
+        bottomInletVertex = self.getBottomInletPoint() 
+
+        # second, we measure distance
+
+        for face in faceList:
+
+            distance = self.getMinDist(startPoint = bottomInletVertex, endPoint = face)
+
+          
+
+        # third, if distance = 0, then we add that specific face to the group
+
+            if distance == 0:
+
+        # 3(i) we will first get the faceID
+
+        # 3(ii) then we will use the faceID to add the face to the correct shape
+                   FaceID = self.geompy.GetSubShapeID(shape, face)
+
+                   inlet = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+                   self.geompy.UnionIDs(inlet, [FaceID])
+
+                   self.geompy.addToStudyInFather(shape, inlet, 'bottomInlet' )
+
+        self.updateBrowser()
+
+
+    def buildTopOutletFace(self,faceList,shape):
+
+        # first, we get our two points, the face and the bottom vertex
+
+        topOutletVertex = self.getTopOutletPoint() 
+
+        # second, we measure distance
+
+        for face in faceList:
+
+            distance = self.getMinDist(startPoint = topOutletVertex, endPoint = face)
+
+          
+
+        # third, if distance = 0, then we add that specific face to the group
+
+            if distance == 0:
+
+                   FaceID = self.geompy.GetSubShapeID(shape, face)
+
+                   outlet = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+                   self.geompy.UnionIDs(outlet, [FaceID])
+
+                   self.geompy.addToStudyInFather(shape, outlet, 'topOutlet' )
+
+        self.updateBrowser()
+
+    def buildCurvedWallFace(self,faceList,shape):
+
+        # first, we get our two points, the face and the bottom vertex
+
+        topOutletVertex = self.getTopOutletPoint() 
+
+        # second, we measure distance
+
+        for face in faceList:
+
+            distance = self.getMinDist(startPoint = topOutletVertex, endPoint = face)
+
+            radius = self.getRadius() 
+
+            difference = distance - radius
+
+        # third, if distance = 0, then we add that specific face to the group
+
+            if difference == 0:
+
+                   FaceID = self.geompy.GetSubShapeID(shape, face)
+
+                   wall = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+                   self.geompy.UnionIDs(wall, [FaceID])
+
+                   self.geompy.addToStudyInFather(shape, wall , 'curvedWall' )
+
+        self.updateBrowser()
+
+
+
 ######################################################################################################
 ######################################################################################################
 ######################################################################################################
@@ -375,7 +464,11 @@ class test:
 
             print(distance)
 
+        cylinderObj.buildBottomInletFace(faceList = faceList, shape = cylinder2)
 
+        cylinderObj.buildTopOutletFace(faceList = faceList, shape = cylinder2)
+
+        cylinderObj.buildCurvedWallFace(faceList = faceList, shape = cylinder2)
 
 
 ######################################################################################################
