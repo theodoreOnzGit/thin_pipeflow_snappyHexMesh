@@ -268,7 +268,7 @@ class cylinderMesh:
         self.NETGEN_1D_2D_3D = self.mesh1.Tetrahedron(algo=self.smeshBuilder.NETGEN_1D2D3D)
         self.smesh.SetName(self.NETGEN_1D_2D_3D.GetAlgorithm(), 'NETGEN 1D-2D-3D')
 
-    def meshAddParameters(self):
+    def meshAddParameters(self,compute=True):
 
         self.NETGEN_3D_Parameters_1 = self.NETGEN_1D_2D_3D.Parameters()
         self.NETGEN_3D_Parameters_1.SetMaxSize( 41.2311 )
@@ -282,9 +282,33 @@ class cylinderMesh:
         self.NETGEN_3D_Parameters_1.SetFuseEdges( 1 )
         self.NETGEN_3D_Parameters_1.SetQuadAllowed( 0 )
         self.NETGEN_3D_Parameters_1.SetCheckChartBoundary( 3 )
+
+        if compute == True:
+            self.meshCompute()
+
+
+
+
+    def meshCompute(self):
         isDone = self.mesh1.Compute()
         self.smesh.SetName(self.NETGEN_3D_Parameters_1, 'NETGEN 3D Parameters_1')
 
+
+    def meshAddInlet(self):
+
+        self.mesh1.GroupOnGeom(self.getInletFace(),self.getInletName(),self.SMESH.FACE)
+
+    def meshAddOutlet(self):
+
+        self.mesh1.GroupOnGeom(self.getOutletFace(),self.getOutletName(),self.SMESH.FACE)
+
+    def meshAddWall(self):
+
+        self.mesh1.GroupOnGeom(self.getWallFace(),self.getWallName(),self.SMESH.FACE)
+
+
+
+#######################################################################################################################
 
 
     def update(self):
@@ -392,6 +416,26 @@ class cylinderMesh:
             self.geompy.addToStudyInFather(shape, inlet, 'inlet' )
             self.update()
 
+            self.setInletFace(inlet)
+            self.setInletName('inlet')
+
+
+    def setInletFace(self,inlet):
+
+        self.inlet = inlet
+
+    def getInletFace(self):
+
+        return self.inlet
+
+    def setInletName(self,inletName='inlet'):
+
+        self.inletName = inletName
+
+    def getInletName(self):
+
+        return self.inletName
+
 
 
     def addOutletToCylinder(self,face,shape = 'cylinder2'):
@@ -423,6 +467,27 @@ class cylinderMesh:
             self.geompy.UnionIDs(outlet, [faceID])
             self.geompy.addToStudyInFather(shape, outlet, 'outlet' )
             self.update()
+
+            self.setOutletFace(outlet)
+            self.setOutletName('outlet')
+
+    def setOutletFace(self,outlet):
+
+        self.outlet = outlet
+
+    def getOutletFace(self):
+
+        return self.outlet
+
+    def setOutletName(self,outletName='outlet'):
+
+        self.outletName = outletName
+
+    def getOutletName(self):
+
+        return self.outletName
+
+
 
 
     def addWallToCylinder(self,face,shape = 'cylinder2'):
@@ -460,6 +525,28 @@ class cylinderMesh:
             self.geompy.UnionIDs(wall, [faceID])
             self.geompy.addToStudyInFather(shape, wall, 'wall' )
             self.update()
+
+            self.setWallFace(wall)
+            self.setWallName('wall')
+
+
+
+    def setWallFace(self,wall):
+
+        self.wall = wall
+
+    def getWallFace(self):
+
+        return self.wall
+
+    def setWallName(self,wallName='wall'):
+
+        self.wallName = wallName
+
+    def getWallName(self):
+
+        return self.wallName
+
 
 
 
@@ -639,7 +726,10 @@ class tests:
         print("investigates how to name faces and add them to the desired shape")
         print(" ")
 
-
+        print(" ")
+        print("test.faceMeshingTest()")
+        print("investigates how to mesh with named faces")
+        print(" ")
 
     def test1(self):
 
@@ -828,6 +918,57 @@ class tests:
 
 
         print('face adding tests complete!')
+
+    def faceMeshingTest(self):
+
+        # this test is meant to automate the creation of a cylinder and the process of naming the faces
+        # of said cylinder plus meshing
+        # the first few steps are pretty much the same as the faceNamingTest
+
+        self.cylinderObj = self.getCylinderObj()
+        cylinder2 = self.cylinderObj.buildCylinder2()
+        faceIDList = self.cylinderObj.getFaceIDListFromShape(shape=cylinder2)
+        faceList = self.cylinderObj.getGroupFaceListFromShape(shape=cylinder2)
+        
+        for face in faceList:
+
+            self.cylinderObj.addInletToCylinder(face,shape=cylinder2)
+            self.cylinderObj.addOutletToCylinder(face,shape=cylinder2)
+            self.cylinderObj.addWallToCylinder(face,shape=cylinder2)
+
+
+        print('face adding complete!')
+
+        # now with the face adding complete, i will need to start a meshing process
+
+        # the first few steps are usually the following:
+
+        #(1) we intiate an smesh object using meshInit()
+        
+        self.cylinderObj.meshInit()
+
+        #(2) we add the shape to the mesh, in this case cylinder2
+        self.cylinderObj.meshAddShape(shape=cylinder2)
+        # the name of the mesh object is mesh1
+
+        #(3) according to the python dump file, we can add the algorithm and mesh parameters next
+        self.cylinderObj.meshAddAlgorithmNetgen1D2D3D()
+        self.cylinderObj.meshAddParameters(compute=False)
+
+        #(4) next is quite important, we need to add faces to the mesh
+
+        self.cylinderObj.meshAddInlet()
+        self.cylinderObj.meshAddOutlet()
+        self.cylinderObj.meshAddWall()
+
+        #(5) lastly we'll compute
+
+        self.cylinderObj.meshCompute()
+
+        #(6 & 7) lastly we export to unv and update
+        self.cylinderObj.unvExport()
+        self.cylinderObj.update()
+
 
     def comments(self):
 
