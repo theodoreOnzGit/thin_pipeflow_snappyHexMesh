@@ -397,7 +397,28 @@ class test:
 
         self.importModules()
 
+        self.printTestDescription()
 
+    
+    def printTestDescription(self):
+
+        print(" ")
+        print("test description:")
+        print(" ")
+        print("test.testCylinderObj()")
+        print("tests meshing of a cylinder without faces")
+        print(" ")
+
+        print(" ")
+        print("test.testFaceName()")
+        print("tests adding faces to a cylinder")
+        print(" ")
+
+
+        print(" ")
+        print("test.testFaceMeshing()")
+        print("tests meshing of a cylinder with faces")
+        print(" ")
 
 
     def importModules(self):
@@ -471,6 +492,11 @@ class test:
         cylinderObj.buildCurvedWallFace(faceList = faceList, shape = cylinder2)
 
 
+    def testFaceMeshing(self):
+
+        pass
+
+
 ######################################################################################################
 ######################################################################################################
 ######################################################################################################
@@ -483,6 +509,8 @@ class workspace:
         print('loading workspace')
 
         self.importModules()
+
+        self.printObjectDeclaration()
 
 
     def importModules(self):
@@ -544,6 +572,16 @@ class workspace:
         print('to get the cylinder object, use getCylinderObj()')
         print(' ')
 
+    def printObjectDeclaration(self):
+
+        print("to get the tests object, type:")
+        print(' ')
+        print("test = self.getTestObj()")
+
+        print(" ")
+        print("to get the cylinder object, type:")
+        print("cylinder = self.getCylinderObj()")
+        print(" ")
 
 
 
