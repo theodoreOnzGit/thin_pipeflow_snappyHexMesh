@@ -225,6 +225,9 @@ class meshBuilder:
 
         return self.topOutletPoint
         
+    def getFaceGroup(self):
+
+        return self.faceGroup
 
     def setDimensionDefaults(self):
 
@@ -246,6 +249,122 @@ class meshBuilder:
         return self.geompy.MakeVector(startPoint,endPoint)
 
 
+    # this function returns a set of faces from the shape
+
+    def buildGroupFromShape(self,shape = 'cylinder2'):
+
+        if shape == 'cylinder1':
+            
+            self.faceGroup = self.geompy.CreateGroup(self.buildCylinder1(), self.geompy.ShapeType["FACE"])
+
+        elif shape == 'cylinder2':
+
+            self.faceGroup = self.geompy.CreateGroup(self.buildCylinder2(), self.geompy.ShapeType["FACE"])
+
+        else:
+
+            self.faceGroup = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+
+        return self.faceGroup
+
+    def buildFaceListFromShape(self,shape = 'cylinder2'):
+
+        if shape == 'cylinder1':
+            shape = self.buildCylinder1()
+
+        elif shape == 'cylinder2':
+            shape = self.buildCylinder2()
+
+        self.faceList  = self.geompy.SubShapeAllSortedCentres(shape, self.geompy.ShapeType["FACE"])
+
+        return self.faceList
+
+    def buildBottomInletFace(self,faceList,shape):
+
+        # first, we get our two points, the face and the bottom vertex
+
+        bottomInletVertex = self.getBottomInletPoint() 
+
+        # second, we measure distance
+
+        for face in faceList:
+
+            distance = self.getMinDist(startPoint = bottomInletVertex, endPoint = face)
+
+          
+
+        # third, if distance = 0, then we add that specific face to the group
+
+            if distance == 0:
+
+        # 3(i) we will first get the faceID
+
+        # 3(ii) then we will use the faceID to add the face to the correct shape
+                   FaceID = self.geompy.GetSubShapeID(shape, face)
+
+                   inlet = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+                   self.geompy.UnionIDs(inlet, [FaceID])
+
+                   self.geompy.addToStudyInFather(shape, inlet, 'bottomInlet' )
+
+        self.updateBrowser()
+
+
+    def buildTopOutletFace(self,faceList,shape):
+
+        # first, we get our two points, the face and the bottom vertex
+
+        topOutletVertex = self.getTopOutletPoint() 
+
+        # second, we measure distance
+
+        for face in faceList:
+
+            distance = self.getMinDist(startPoint = topOutletVertex, endPoint = face)
+
+          
+
+        # third, if distance = 0, then we add that specific face to the group
+
+            if distance == 0:
+
+                   FaceID = self.geompy.GetSubShapeID(shape, face)
+
+                   outlet = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+                   self.geompy.UnionIDs(outlet, [FaceID])
+
+                   self.geompy.addToStudyInFather(shape, outlet, 'topOutlet' )
+
+        self.updateBrowser()
+
+    def buildCurvedWallFace(self,faceList,shape):
+
+        # first, we get our two points, the face and the bottom vertex
+
+        topOutletVertex = self.getTopOutletPoint() 
+
+        # second, we measure distance
+
+        for face in faceList:
+
+            distance = self.getMinDist(startPoint = topOutletVertex, endPoint = face)
+
+            radius = self.getRadius() 
+
+            difference = distance - radius
+
+        # third, if distance = 0, then we add that specific face to the group
+
+            if difference == 0:
+
+                   FaceID = self.geompy.GetSubShapeID(shape, face)
+
+                   wall = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
+                   self.geompy.UnionIDs(wall, [FaceID])
+
+                   self.geompy.addToStudyInFather(shape, wall , 'curvedWall' )
+
+        self.updateBrowser()
 
 
 
@@ -315,13 +434,41 @@ class test:
 
     def testFaceName(self):
 
+        # we are initiating the cylinder build process
+
         cylinderObj = self.getCylinderObj()
         cylinderObj.buildOrigin()
         cylinder2 = cylinderObj.buildCylinder2()
 
+        # now we need to get the vertices for minimum distance
 
+        topOutletPoint = cylinderObj.getTopOutletPoint()
+        bottomInletPoint = cylinderObj.getBottomInletPoint()
 
+        # let's return a group of faces (important for adding objects to geopy)
 
+        faceGroup = cylinderObj.buildGroupFromShape(shape = cylinder2)
+
+        print(faceGroup)
+
+        # let's also return a list of faces so that we can compare distance
+
+        faceList = cylinderObj.buildFaceListFromShape(shape = cylinder2)
+
+        print(faceList)
+
+        for face in faceList:
+            print(face)
+
+            distance = cylinderObj.getMinDist(startPoint = bottomInletPoint, endPoint = face)
+
+            print(distance)
+
+        cylinderObj.buildBottomInletFace(faceList = faceList, shape = cylinder2)
+
+        cylinderObj.buildTopOutletFace(faceList = faceList, shape = cylinder2)
+
+        cylinderObj.buildCurvedWallFace(faceList = faceList, shape = cylinder2)
 
 
 ######################################################################################################
