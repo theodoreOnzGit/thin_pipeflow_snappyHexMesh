@@ -610,6 +610,36 @@ class tests:
         from cylinderClass import cylinderMesh
         self.cylinderMesh = cylinderMesh
 
+        self.printTestDescription()
+
+
+    def printTestDescription(self):
+
+        print(" ")
+        print("welcome to the tests object")
+        print("here we run specific tests for the cylinder object")
+        
+        print(" ")
+        print("test.test1()")
+        print("does basic meshing and shape addition without faces")
+        print(" ")
+
+        print(" ")
+        print("test.test2()")
+        print("gets group face lists from particular shapes")
+        print(" ")
+
+        print(" ")
+        print("test.faceListTest()")
+        print("investigates how to deal with faces in salome")
+        print(" ")
+
+        print(" ")
+        print("test.faceNamingTest()")
+        print("investigates how to name faces and add them to the desired shape")
+        print(" ")
+
+
 
     def test1(self):
 
@@ -827,6 +857,19 @@ class workspace:
         print('initialising workspace...')
 
         self.initialiseDefaults()
+
+        self.printObjectDeclaration()
+
+        
+    def printObjectDeclaration(self):
+
+        print("to get the tests object, type:")
+        print(' ')
+        print("test = self.getTestsObj()")
+
+        print(" ")
+        print("to get the cylinder object, type:")
+        print("cylinder = self.getCylinderObj")
 
 
     def getTestsObj(self):
