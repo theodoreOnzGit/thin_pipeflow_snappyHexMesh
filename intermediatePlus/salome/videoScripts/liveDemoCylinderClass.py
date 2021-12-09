@@ -171,6 +171,13 @@ class meshBuilder:
 
         return mesh1
 
+
+    def buildCylinder2Mesh(self):
+
+        shape = self.getCylinder2()
+        
+
+
     def mesh1Init(self,shape='cylinder2',meshName='mesh1'):
 
         if shape == 'cylinder2':
@@ -287,6 +294,64 @@ class meshBuilder:
 
         return self.NETGEN_1D_2D_3D
 
+    def getFaceGroup(self):
+
+        return self.faceGroup
+
+    def getFaceList(self):
+
+        return self.faceList
+
+    def setInlet(self,inlet):
+
+        self.inlet = inlet
+
+    def getInlet(self):
+
+        return self.inlet
+
+    def setInletName(self,inletName):
+
+        self.inletName = inletName
+
+    def getInletName(self):
+
+        return self.inletName
+
+
+    def setOutlet(self,outlet):
+
+        self.outlet = outlet
+
+    def getOutlet(self):
+
+        return self.outlet
+
+    def setOutletName(self,outletName):
+
+        self.outletName = outletName
+
+    def getOutletName(self):
+
+        return self.outletName
+
+    def setWall(self,wall):
+
+        self.wall = wall
+
+    def getWall(self):
+
+        return self.wall
+
+    def setWallName(self,wallName):
+
+        self.wallName = wallName
+
+    def getWallName(self):
+
+        return self.wallName
+
+
 ######################################################################################################
 
 # this section does intermeditate calculations
@@ -310,7 +375,7 @@ class meshBuilder:
 
         elif shape == 'cylinder2':
 
-            self.faceGroup = self.geompy.CreateGroup(self.buildCylinder2(), self.geompy.ShapeType["FACE"])
+            self.faceGroup = self.geompy.CreateGroup(self.getCylinder2(), self.geompy.ShapeType["FACE"])
 
         else:
 
@@ -324,11 +389,20 @@ class meshBuilder:
             shape = self.buildCylinder1()
 
         elif shape == 'cylinder2':
-            shape = self.buildCylinder2()
+            shape = self.getCylinder2()
 
         self.faceList  = self.geompy.SubShapeAllSortedCentres(shape, self.geompy.ShapeType["FACE"])
 
         return self.faceList
+
+
+    def buildCylinder2BottomInletFace(self):
+
+        shape = self.getCylinder2()
+        faceList = self.getFaceList()
+
+        self.buildBottomInletFace(faceList = faceList, shape = shape)
+
 
     def buildBottomInletFace(self,faceList,shape):
 
@@ -354,11 +428,23 @@ class meshBuilder:
                    FaceID = self.geompy.GetSubShapeID(shape, face)
 
                    inlet = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
-                   self.geompy.UnionIDs(inlet, [FaceID])
 
-                   self.geompy.addToStudyInFather(shape, inlet, 'bottomInlet' )
+                   self.setInlet(inlet)
+
+                   self.geompy.UnionIDs(self.getInlet(), [FaceID])
+
+                   self.setInletName('bottomInlet')
+
+                   self.geompy.addToStudyInFather(shape, self.getInlet(), self.getInletName() )
 
         self.updateBrowser()
+
+    def buildCylinder2TopOutletFace(self):
+
+        shape = self.getCylinder2()
+        faceList = self.getFaceList()
+
+        self.buildTopOutletFace(faceList = faceList, shape = shape)
 
 
     def buildTopOutletFace(self,faceList,shape):
@@ -382,11 +468,24 @@ class meshBuilder:
                    FaceID = self.geompy.GetSubShapeID(shape, face)
 
                    outlet = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
-                   self.geompy.UnionIDs(outlet, [FaceID])
 
-                   self.geompy.addToStudyInFather(shape, outlet, 'topOutlet' )
+                   self.setOutlet(outlet)
+
+                   self.geompy.UnionIDs(self.getOutlet(), [FaceID])
+
+                   self.setOutletName('topOutlet')
+
+                   self.geompy.addToStudyInFather(shape, self.getOutlet(), self.getOutletName() )
 
         self.updateBrowser()
+
+    def buildCylinder2CurvedWallFace(self):
+
+        shape = self.getCylinder2()
+        faceList = self.getFaceList()
+
+        self.buildCurvedWallFace(faceList = faceList, shape = shape)
+
 
     def buildCurvedWallFace(self,faceList,shape):
 
@@ -411,9 +510,14 @@ class meshBuilder:
                    FaceID = self.geompy.GetSubShapeID(shape, face)
 
                    wall = self.geompy.CreateGroup(shape, self.geompy.ShapeType["FACE"])
-                   self.geompy.UnionIDs(wall, [FaceID])
 
-                   self.geompy.addToStudyInFather(shape, wall , 'curvedWall' )
+                   self.setWall(wall)
+
+                   self.geompy.UnionIDs(self.getWall(), [FaceID])
+
+                   self.setWallName('curvedWall')
+
+                   self.geompy.addToStudyInFather(shape, self.getWall() , self.getWallName() )
 
         self.updateBrowser()
 
@@ -545,7 +649,36 @@ class test:
 
     def testFaceMeshing(self):
 
-        pass
+        # we are initiating the cylinder build process
+
+        cylinderObj = self.getCylinderObj()
+        cylinderObj.buildOrigin()
+        cylinderObj.buildCylinder2()
+
+        # now we build groups and facelists
+
+        cylinderObj.buildGroupFromShape()
+        cylinderObj.buildFaceListFromShape()
+
+        # now we add in the faces
+
+        cylinderObj.buildCylinder2BottomInletFace()
+        cylinderObj.buildCylinder2TopOutletFace()
+        cylinderObj.buildCylinder2CurvedWallFace()
+
+        # now for meshing
+
+        cylinderObj.mesh1Init()
+        cylinderObj.mesh1AlgoNetgen1D2D3D()
+
+        # mesh add faces
+
+
+        # mesh computing
+
+        cylinderObj.mesh1Compute()
+
+        
 
 
 ######################################################################################################
