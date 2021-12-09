@@ -149,7 +149,7 @@ class meshBuilder:
             self.salome.sg.updateObjBrowser()
 
 
-    def meshShapeNETGEN1D2D3D(self,shape,meshName='mesh1'):
+    def meshShapeNETGEN1D2D3DLegacy(self,shape,meshName='mesh1'):
 
         mesh1 = self.smesh.Mesh(shape)
         NETGEN_1D_2D_3D = mesh1.Tetrahedron(algo=self.smeshBuilder.NETGEN_1D2D3D)
@@ -161,6 +161,44 @@ class meshBuilder:
         self.updateBrowser()
 
         return mesh1
+
+    def meshShapeNETGEN1D2D3D(self,shape,meshName='mesh1'):
+
+        self.mesh1Init(shape=shape)
+        self.mesh1AlgoNetgen1D2D3D()
+        self.mesh1Compute()
+        self.updateBrowser()
+
+        return mesh1
+
+    def mesh1Init(self,shape='cylinder2',meshName='mesh1'):
+
+        if shape == 'cylinder2':
+            meshName = 'cylinder2'
+            shape = self.getCylinder2()
+
+        self.mesh1 = self.smesh.Mesh(shape)
+
+        self.smesh.SetName(self.mesh1.GetMesh(),meshName)
+
+    def mesh1AlgoNetgen1D2D3D(self):
+
+        self.NETGEN_1D_2D_3D = self.mesh1.Tetrahedron(algo=self.smeshBuilder.NETGEN_1D2D3D)
+        self.smesh.SetName(self.NETGEN_1D_2D_3D.GetAlgorithm(), 'NETGEN 1D-2D-3D')
+
+
+    def mesh1Compute(self):
+
+        isDone = self.mesh1.Compute()
+
+        return isDone
+
+
+
+
+
+
+
 
 
 
@@ -235,6 +273,19 @@ class meshBuilder:
         self.setBottomInletPoint()
         self.setCylinderHeight()
         self.setRadius()
+
+    def getCylinder2(self):
+
+        return self.cylinder2
+
+
+    def getMesh1(self):
+
+        return self.mesh1
+
+    def getMesh1Netgen1D2D3D(self):
+
+        return self.NETGEN_1D_2D_3D
 
 ######################################################################################################
 
