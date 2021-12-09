@@ -731,6 +731,12 @@ class tests:
         print("investigates how to mesh with named faces")
         print(" ")
 
+        print(" ")
+        print("test.test4()")
+        print("investigates writing input and output files")
+        print(" ")
+
+
     def test1(self):
 
         self.cylinderObj = self.getCylinderObj()
@@ -969,6 +975,18 @@ class tests:
         self.cylinderObj.unvExport()
         self.cylinderObj.update()
 
+    def test4(self):
+
+        # this is an input output writer test
+
+        foamWriterObj = self.getFoamWriterObj()
+
+
+
+
+
+
+
 
     def comments(self):
 
@@ -990,6 +1008,25 @@ class tests:
 
         return self.cylinderObj
 
+    def getFoamWriterObj(self):
+
+        import inputOutputWriter
+
+        inputOutputWriter = self.reload(inputOutputWriter)
+
+        from inputOutputWriter import foamWriter
+
+        foamWriterObj = foamWriter()
+
+        return foamWriterObj
+
+
+    def reload(self,pythonFile):
+
+        from importlib import reload
+        reload(pythonFile)
+
+        return pythonFile
 
 class workspace:
 
@@ -1062,3 +1099,22 @@ class workspace:
         from cylinderClass import tests
 
         self.tests = tests
+
+
+        # now we also import a new inputOutputWriter object
+
+        import inputOutputWriter
+        reload(inputOutputWriter)
+
+        self.inputOutputWriter = inputOutputWriter
+
+
+    def getFoamWriterObj(self):
+
+        self.reloadClasses()
+
+        from inputOutputWriter import foamWriter
+
+        foamWriterObj = foamWriter()
+
+        return foamWriterObj
