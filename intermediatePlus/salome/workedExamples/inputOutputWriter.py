@@ -14,9 +14,34 @@ class foamWriter:
         print("hello there!")
         print("foam writer object initiated")
 
-    def writeNewFile(self):
+    def getOverwriteObject(self):
 
-        pass
+        fileName = self.getFileName()
+
+        return open(fileName,'w') 
+
+    def setFileName(self,fileName = 'file'):
+
+        self.fileName = fileName
+
+    def getFileName(self):
+
+        return self.fileName
+
+    def overwriteTest1(self):
+
+        self.setFileName('test1')
+
+        f = self.getOverwriteObject()
+
+        f.write("this is test 1 for overwriting files")
+
+
+
+    
+
+
+
 
 
 class test:
