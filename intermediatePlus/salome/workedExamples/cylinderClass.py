@@ -983,6 +983,15 @@ class tests:
 
         foamWriterObj.overwriteTest1()
 
+        for i in range(7):
+            foamWriterObj.appendTest2()
+
+
+        # now i'm able to write input and output files as and how i like for openfoam!
+        
+
+
+
 
 
 

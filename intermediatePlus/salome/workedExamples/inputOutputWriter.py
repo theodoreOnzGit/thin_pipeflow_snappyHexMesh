@@ -18,7 +18,13 @@ class foamWriter:
 
         fileName = self.getFileName()
 
-        return open(fileName,'w') 
+        return open(fileName,'w')
+
+    def getAppendWriteObject(self):
+
+        fileName = self.getFileName()
+
+        return open(fileName,'a')
 
     def setFileName(self,fileName = 'file'):
 
@@ -35,6 +41,24 @@ class foamWriter:
         f = self.getOverwriteObject()
 
         f.write("this is test 1 for overwriting files")
+
+    def appendTest1(self):
+
+        f = self.getAppendWriteObject()
+
+        f.write("hello, this is test 1 for appending")
+
+
+    def appendTest2(self):
+
+        f = self.getAppendWriteObject()
+
+        # this one appends with a new line
+
+        f.write("\n")
+
+        f.write("hellow this is test 2 for appending")
+
 
 
 
