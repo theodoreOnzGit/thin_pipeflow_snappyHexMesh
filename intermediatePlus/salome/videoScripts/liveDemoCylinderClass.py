@@ -352,6 +352,28 @@ class meshBuilder:
         return self.wallName
 
 
+    def getPathName(self):
+
+        import os
+
+        pathName = os.getcwd()+r'/'
+
+        return pathName
+
+    def getMesh1UnvName(self):
+
+        return r'mesh1.unv'
+
+    def getMesh1UnvPathName(self):
+
+        partOne = self.getPathName()
+        partTwo = self.getMesh1UnvName()
+
+        return partOne + partTwo
+
+
+
+
 ######################################################################################################
 
 # this section does intermeditate calculations
@@ -522,6 +544,66 @@ class meshBuilder:
         self.updateBrowser()
 
 
+    def addFaceToMesh(self,meshObject,face,faceName):
+
+        meshObject.GroupOnGeom(face,faceName,self.SMESH.FACE)
+
+
+    def addFaceToMesh1(self,face,faceName):
+
+        self.addFaceToMesh(meshObject = self.getMesh1(),face = face,faceName = faceName)
+
+
+    def addInletToMesh1(self):
+
+        face = self.getInlet()
+        faceName = self.getInletName()
+
+        self.addFaceToMesh1(face = face, faceName = faceName)
+
+    def addOutletToMesh1(self):
+
+        face = self.getOutlet()
+        faceName = self.getOutletName()
+
+        self.addFaceToMesh1(face = face, faceName = faceName)
+
+
+    def addWallToMesh1(self):
+
+        face = self.getWall()
+        faceName = self.getWallName()
+
+        self.addFaceToMesh1(face = face, faceName = faceName)
+
+
+######################################################################################################
+######################################################################################################
+
+    def exportMeshToUnv(self,mesh,pathName): 
+
+
+        try:
+            mesh.ExportUNV(pathName)
+            pass
+        except:
+            print('ExportUNV() failed. Invalid file name?')
+
+
+    def exportMesh1ToUnv(self,pathName):
+
+        self.exportMeshToUnv(mesh = self.getMesh1(), pathName = pathName)
+
+    def exportMesh1ToUnvInPythonFolder(self):
+
+        self.exportMesh1ToUnv(pathName = self.getMesh1UnvPathName())
+
+
+######################################################################################################
+######################################################################################################
+
+
+
 
 ######################################################################################################
 ######################################################################################################
@@ -537,7 +619,17 @@ class meshBuilder:
         print(' =====================================================')
         print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
 
+    def printBar(self):
 
+
+        print(' ')
+        print(' ')
+        print(' =====================================================')
+        print(' ')
+        print(' ')
+        print(' =====================================================')
+        print(' ')
+        print(' ')
 
 ######################################################################################################
 ######################################################################################################
@@ -575,6 +667,10 @@ class test:
         print("tests meshing of a cylinder with faces")
         print(" ")
 
+        print(" ")
+        print("test.foamWriterTest()")
+        print("tests building of openfoam input files")
+        print(" ")
 
     def importModules(self):
 
@@ -591,11 +687,24 @@ class test:
         self.meshBuilder = meshBuilder
 
 
+        # import the foamWriter module
+
+        import inputOutput
+
+        from inputOutput import foamWriter
+        self.foamWriter = foamWriter
+
 
     def getCylinderObj(self):
 
         cylinderObj = self.meshBuilder()
         return cylinderObj
+
+    def getFoamWriterObj(self):
+
+        foamWriterObj = self.foamWriter()
+
+        return foamWriterObj
 
 
     def testCylinderObj(self):
@@ -673,10 +782,48 @@ class test:
 
         # mesh add faces
 
+        cylinderObj.addInletToMesh1()
+        cylinderObj.addOutletToMesh1()
+        cylinderObj.addWallToMesh1()
+
 
         # mesh computing
 
         cylinderObj.mesh1Compute()
+
+        # debugging
+
+        debug = 0
+
+        if debug == 1:
+
+            print(cylinderObj.getMesh1UnvPathName())
+
+
+        # mesh1 export
+
+        cylinderObj.exportMesh1ToUnvInPythonFolder()
+
+        # final commentary
+
+        cylinderObj.printBar()
+
+        print("mesh exported to:")
+
+        print(cylinderObj.getMesh1UnvPathName())
+
+        print(" ")
+
+
+    def foamWriterTest(self):
+
+        foamWriterObj = self.getFoamWriterObj()
+
+        foamWriterObj.writeVelocityFile()
+
+        foamWriterObj.writeKinematicPressureFile()
+
+
 
         
 
@@ -716,6 +863,14 @@ class workspace:
         from liveDemoCylinderClass import test
         self.test = test
 
+
+        # import the foamWriter module
+
+        import inputOutput
+
+        from inputOutput import foamWriter
+        self.foamWriter = foamWriter
+
     def reloadModules(self):
 
         reload = self.reload
@@ -734,6 +889,14 @@ class workspace:
         from liveDemoCylinderClass import test
         self.test = test
 
+        # reload the foamWriter module
+
+        import inputOutput
+        reload(inputOutput)
+
+        from inputOutput import foamWriter
+        self.foamWriter = foamWriter
+
     def getCylinderObj(self):
 
         self.reloadModules()
@@ -747,6 +910,13 @@ class workspace:
         testObj = self.test()
 
         return testObj
+
+    def getFoamWriterObj(self):
+
+        self.reloadModules()
+        foamWriterObj = self.foamWriter()
+
+        return foamWriterObj
 
     def printHelp(self):
 
