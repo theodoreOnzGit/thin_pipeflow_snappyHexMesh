@@ -824,8 +824,11 @@ class test:
 
         foamWriterObj.writeKinematicPressureFile()
 
-        foamWriterObj.readAndPrintFile('U')
-        foamWriterObj.readAndPrintFile('p')
+        uFilePath = foamWriterObj.getFilePathU()
+        pFilePath = foamWriterObj.getFilePathP()
+
+        foamWriterObj.readAndPrintFile(uFilePath)
+        foamWriterObj.readAndPrintFile(pFilePath)
 
 
 

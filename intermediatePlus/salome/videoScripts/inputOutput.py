@@ -166,6 +166,11 @@ class foamWriter:
         self.writeBoundaryFieldOpener(fileName = fileName)
 
 
+        self.writePatch(fileName = fileName, patchName = 'inlet')
+        self.writePatch(fileName = fileName, patchName = 'outlet')
+        self.writePatch(fileName = fileName, patchName = 'wall')
+
+
         self.writeBoundaryFieldCloser(fileName = fileName)
 
 
@@ -191,6 +196,62 @@ class foamWriter:
         f.write(" ")
         f.write("\n")
 
+        f.close()
+
+    def writePatch(self,fileName,patchName = 'patch',patchType = 'fixedValue',patchValue = 'uniform 0'):
+
+        self.writePatchOpener(fileName = fileName, patchName = patchName)
+
+        self.writePatchType(fileName = fileName , patchType = patchType)
+
+        self.writePatchValue(fileName = fileName , patchValue = patchValue)
+
+        self.writePatchCloser(fileName = fileName)
+
+
+
+
+    def writePatchOpener(self,fileName,patchName):
+
+        f = self.getAppendObj(fileName = fileName)
+
+        f.write('    '+patchName)
+        f.write("\n")
+        f.write("    {")
+        f.write("\n")
+
+        f.close()
+
+
+    def writePatchType(self,fileName,patchType='fixedValue'):
+
+        f = self.getAppendObj(fileName = fileName)
+
+        f.write('        '+'type'+'             '+patchType+';')
+        f.write("\n")
+
+        f.close()
+
+
+    def writePatchValue(self,fileName,patchValue='uniform 0'):
+
+        f = self.getAppendObj(fileName = fileName)
+
+        f.write('        '+'value'+'            '+patchValue+';')
+        f.write("\n")
+
+        f.close()
+
+
+    def writePatchCloser(self,fileName):
+
+
+        f = self.getAppendObj(fileName = fileName)
+
+        f.write("    }")
+        f.write("\n")
+        f.write(" ")
+        f.write("\n")
         f.close()
 
 ##### get and set functions are here #####
@@ -249,6 +310,14 @@ class foamWriter:
         localFilePath =  '/thin_pipeflow_snappyHexMesh/intermediatePlus/salome/videoScripts/'
 
         return self.getCurrentDir() + localFilePath
+
+    def getFilePathU(self):
+
+        return self.getFilePath() + 'U'
+
+    def getFilePathP(self):
+
+        return self.getFilePath() + 'p'
 
 
 
