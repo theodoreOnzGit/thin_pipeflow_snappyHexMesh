@@ -71,7 +71,7 @@ class foamWriter:
     def writeKinematicPressureDimensions(self):
 
         
-        f = self.getAppendObj(fileName = "p")
+        f = self.getAppendObj(fileName = self.getFilePath()+"p")
 
         f.write("dimensions      [0 2 -2 0 0 0 0];")
         f.write("\n")
@@ -84,7 +84,7 @@ class foamWriter:
     def writeVelocityDimensions(self):
 
         
-        f = self.getAppendObj(fileName = "U")
+        f = self.getAppendObj(fileName = self.getFilePath()+"U")
 
         f.write("dimensions      [0 1 -1 0 0 0 0];")
         f.write("\n")
@@ -117,42 +117,42 @@ class foamWriter:
 
         internalFieldValue = "("+str(ux)+" "+str(uy)+" "+str(uz)+")"
 
-        self.writeInternalField(fileName = "U", internalFieldValue = internalFieldValue)
+        self.writeInternalField(fileName = self.getFilePath()+"U", internalFieldValue = internalFieldValue)
 
     def writeKinematicPressureInternalField(self):
 
-        self.writeInternalField(fileName = "p", internalFieldValue = self.getKinematicPressureInternalField())
+        self.writeInternalField(fileName = self.getFilePath()+"p", internalFieldValue = self.getKinematicPressureInternalField())
 
     def writeVelocityFile(self):
 
-        self.writeHeader(fileName = 'U')
+        self.writeHeader(fileName = self.getFilePath()+'U')
 
-        self.writeFoamFileSection(fileName = 'U', fieldType = 'volVectorField')
+        self.writeFoamFileSection(fileName = self.getFilePath()+'U', fieldType = 'volVectorField')
 
-        self.writeHeader2(fileName = "U")
+        self.writeHeader2(fileName = self.getFilePath()+"U")
 
         self.writeVelocityDimensions()
 
         self.writeVelocityInternalField()
 
-        self.writeBoundaryField(fileName = 'U')
+        self.writeBoundaryField(fileName = self.getFilePath()+'U')
 
 
         print("velocity file written")
 
     def writeKinematicPressureFile(self):
 
-        self.writeHeader(fileName = 'p')
+        self.writeHeader(fileName = self.getFilePath()+'p')
 
-        self.writeFoamFileSection(fileName = 'p', fieldType = 'volScalarField')
+        self.writeFoamFileSection(fileName = self.getFilePath()+'p', fieldType = 'volScalarField')
 
-        self.writeHeader2(fileName = "p")
+        self.writeHeader2(fileName = self.getFilePath()+"p")
 
         self.writeKinematicPressureDimensions()
 
         self.writeKinematicPressureInternalField()
 
-        self.writeBoundaryField(fileName = 'p')
+        self.writeBoundaryField(fileName = self.getFilePath()+'p')
 
 
         print("pressure file written")
@@ -237,6 +237,20 @@ class foamWriter:
     def getKinematicPressureInternalField(self):
 
         return self.kinematicPressure
+
+    def getCurrentDir(self):
+
+        import os
+
+        return os.getcwd()
+
+    def getFilePath(self):
+
+        localFilePath =  '/thin_pipeflow_snappyHexMesh/intermediatePlus/salome/videoScripts/'
+
+        return self.getCurrentDir() + localFilePath
+
+
 
 
 ##### here are functions/methods to read files #####

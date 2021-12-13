@@ -367,9 +367,10 @@ class meshBuilder:
     def getMesh1UnvPathName(self):
 
         partOne = self.getPathName()
-        partTwo = self.getMesh1UnvName()
+        partTwo = 'thin_pipeflow_snappyHexMesh/intermediatePlus/salome/videoScripts/' 
+        partThree = self.getMesh1UnvName()
 
-        return partOne + partTwo
+        return partOne + partTwo + partThree
 
 
 
