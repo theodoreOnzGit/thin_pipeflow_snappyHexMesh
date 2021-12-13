@@ -823,6 +823,9 @@ class test:
 
         foamWriterObj.writeKinematicPressureFile()
 
+        foamWriterObj.readAndPrintFile('U')
+        foamWriterObj.readAndPrintFile('p')
+
 
 
         

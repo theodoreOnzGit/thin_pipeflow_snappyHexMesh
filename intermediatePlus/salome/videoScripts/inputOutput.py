@@ -135,6 +135,9 @@ class foamWriter:
 
         self.writeVelocityInternalField()
 
+        self.writeBoundaryField(fileName = 'U')
+
+
         print("velocity file written")
 
     def writeKinematicPressureFile(self):
@@ -149,9 +152,48 @@ class foamWriter:
 
         self.writeKinematicPressureInternalField()
 
+        self.writeBoundaryField(fileName = 'p')
+
 
         print("pressure file written")
 
+
+
+##### this section is for boundary fields #####
+
+    def writeBoundaryField(self,fileName):
+
+        self.writeBoundaryFieldOpener(fileName = fileName)
+
+
+        self.writeBoundaryFieldCloser(fileName = fileName)
+
+
+
+    def writeBoundaryFieldOpener(self,fileName):
+
+        f = self.getAppendObj(fileName = fileName)
+
+        f.write("boundaryField")
+        f.write("\n")
+        f.write("{")
+        f.write("\n")
+
+        f.close()
+
+    def writeBoundaryFieldCloser(self,fileName):
+
+
+        f = self.getAppendObj(fileName = fileName)
+
+        f.write("}")
+        f.write("\n")
+        f.write(" ")
+        f.write("\n")
+
+        f.close()
+
+##### get and set functions are here #####
 
     def getOpenObj(self,fileName,mode):
 
@@ -171,9 +213,11 @@ class foamWriter:
 
         return f
 
+    def getReadObj(self,fileName):
 
-##### get and set functions are here #####
+        f = self.getOpenObj(fileName = fileName, mode = "r")
 
+        return f
 
     def setVelocityInternalField(self,ux,uy,uz):
 
@@ -193,3 +237,24 @@ class foamWriter:
     def getKinematicPressureInternalField(self):
 
         return self.kinematicPressure
+
+
+##### here are functions/methods to read files #####
+
+    def readAndPrintFile(self,fileName, mode = 2):
+
+        f = self.getReadObj(fileName = fileName)
+
+        if mode == 1:
+
+            for line in f:
+                print(line)
+
+        elif mode == 2:
+
+            contents = f.read()
+            print(contents)
+
+
+
+
