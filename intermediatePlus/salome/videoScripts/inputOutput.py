@@ -34,7 +34,7 @@ class foamWriter:
         f.close()
 
 
-    def writeFoamFileSection(self,fileName,fieldType):
+    def writeFoamFileSection(self,fileName,fieldType,objectName):
 
         if fieldType == "vector":
 
@@ -52,7 +52,7 @@ class foamWriter:
         f.write("\n")
         f.write(r"    class       "+fieldType+";")
         f.write("\n")
-        f.write(r"    object      "+fileName+";")
+        f.write(r"    object      "+objectName+";")
         f.write("\n")
         f.write(r"}")
         f.write("\n")
@@ -65,6 +65,13 @@ class foamWriter:
         f.write("// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //")
         f.write("\n")
         f.write(" ")
+        f.write("\n")
+        f.close()
+
+    def writeOutro(self,fileName):
+
+        f = self.getAppendObj(fileName = fileName)
+        f.write("// ************************************************************************* //")
         f.write("\n")
         f.close()
 
@@ -127,7 +134,7 @@ class foamWriter:
 
         self.writeHeader(fileName = self.getFilePath()+'U')
 
-        self.writeFoamFileSection(fileName = self.getFilePath()+'U', fieldType = 'volVectorField')
+        self.writeFoamFileSection(fileName = self.getFilePath()+'U', fieldType = 'volVectorField',objectName = 'U')
 
         self.writeHeader2(fileName = self.getFilePath()+"U")
 
@@ -135,7 +142,9 @@ class foamWriter:
 
         self.writeVelocityInternalField()
 
-        self.writeBoundaryField(fileName = self.getFilePath()+'U')
+        self.writeBoundaryFieldU()
+
+        self.writeOutro(fileName = self.getFilePathU())
 
 
         print("velocity file written")
@@ -144,7 +153,7 @@ class foamWriter:
 
         self.writeHeader(fileName = self.getFilePath()+'p')
 
-        self.writeFoamFileSection(fileName = self.getFilePath()+'p', fieldType = 'volScalarField')
+        self.writeFoamFileSection(fileName = self.getFilePath()+'p', fieldType = 'volScalarField', objectName = 'p')
 
         self.writeHeader2(fileName = self.getFilePath()+"p")
 
@@ -152,8 +161,9 @@ class foamWriter:
 
         self.writeKinematicPressureInternalField()
 
-        self.writeBoundaryField(fileName = self.getFilePath()+'p')
+        self.writeBoundaryFieldP()
 
+        self.writeOutro(fileName = self.getFilePathP())
 
         print("pressure file written")
 
@@ -161,15 +171,29 @@ class foamWriter:
 
 ##### this section is for boundary fields #####
 
-    def writeBoundaryField(self,fileName):
+    def writeBoundaryFieldU(self):
+
+        self.writeBoundaryField(fileName =  self.getFilePath()+'U', objectName = 'U')
+
+    def writeBoundaryFieldP(self):
+
+        self.writeBoundaryField(fileName =  self.getFilePath()+'p', objectName = 'p')
+
+
+
+
+    def writeBoundaryField(self,fileName,objectName):
 
         self.writeBoundaryFieldOpener(fileName = fileName)
 
+        self.setInletBoundaryConditions(objectName = objectName)
+        self.writePatch(fileName = fileName)
 
-        self.writePatch(fileName = fileName, patchName = 'inlet')
-        self.writePatch(fileName = fileName, patchName = 'outlet')
-        self.writePatch(fileName = fileName, patchName = 'wall')
+        self.setOutletBoundaryConditions(objectName = objectName)
+        self.writePatch(fileName = fileName)
 
+        self.setWallBoundaryConditions(objectName = objectName)
+        self.writePatch(fileName = fileName)
 
         self.writeBoundaryFieldCloser(fileName = fileName)
 
@@ -198,13 +222,13 @@ class foamWriter:
 
         f.close()
 
-    def writePatch(self,fileName,patchName = 'patch',patchType = 'fixedValue',patchValue = 'uniform 0'):
+    def writePatch(self,fileName):
 
-        self.writePatchOpener(fileName = fileName, patchName = patchName)
+        self.writePatchOpener(fileName = fileName, patchName = self.getPatchName())
 
-        self.writePatchType(fileName = fileName , patchType = patchType)
+        self.writePatchType(fileName = fileName , patchType = self.getPatchType())
 
-        self.writePatchValue(fileName = fileName , patchValue = patchValue)
+        self.writePatchValue(fileName = fileName , patchValue = self.getPatchValue())
 
         self.writePatchCloser(fileName = fileName)
 
@@ -235,6 +259,9 @@ class foamWriter:
 
     def writePatchValue(self,fileName,patchValue='uniform 0'):
 
+        if patchValue == 'nil':
+            return None
+
         f = self.getAppendObj(fileName = fileName)
 
         f.write('        '+'value'+'            '+patchValue+';')
@@ -253,6 +280,48 @@ class foamWriter:
         f.write(" ")
         f.write("\n")
         f.close()
+
+##### these are functions to help set the right boundary conditions #####
+
+    def setInletBoundaryConditions(self,objectName,patchName = 'inlet'):
+
+        self.setPatchName(patchName)
+
+        if objectName == 'U':
+            self.setPatchType('fixedValue')
+            self.setPatchValue('uniform (0 0 1)')
+
+        elif objectName == 'p':
+            self.setPatchType('zeroGradient')
+            self.setPatchValue()
+
+
+
+    def setOutletBoundaryConditions(self,objectName,patchName = 'outlet'):
+
+        self.setPatchName(patchName)
+
+        if objectName == 'U':
+            self.setPatchType('zeroGradient')
+            self.setPatchValue()
+
+        elif objectName == 'p':
+            self.setPatchType('fixedValue')
+            self.setPatchValue('uniform 10000')
+
+
+
+    def setWallBoundaryConditions(self,objectName,patchName = 'wall'):
+
+        self.setPatchName(patchName)
+
+        if objectName == 'U':
+            self.setPatchType('noSlip')
+            self.setPatchValue()
+
+        elif objectName == 'p':
+            self.setPatchType('zeroGradient')
+            self.setPatchValue()
 
 ##### get and set functions are here #####
 
@@ -318,6 +387,31 @@ class foamWriter:
     def getFilePathP(self):
 
         return self.getFilePath() + 'p'
+
+
+    def setPatchName(self,patchName):
+
+        self.patchName = patchName
+
+    def getPatchName(self):
+
+        return self.patchName
+
+    def setPatchType(self,patchType):
+
+        self.patchType = patchType
+
+    def getPatchType(self):
+
+        return self.patchType
+
+    def setPatchValue(self,patchValue='nil'):
+
+        self.patchValue = patchValue
+
+    def getPatchValue(self):
+
+        return self.patchValue
 
 
 
